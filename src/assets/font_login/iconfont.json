@@ -1,0 +1,30 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "7516882",
+      "name": "登录用户",
+      "font_class": "dengluyonghu",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "15388513",
+      "name": "退出登录",
+      "font_class": "tuichudenglu",
+      "unicode": "e650",
+      "unicode_decimal": 58960
+    },
+    {
+      "icon_id": "16780728",
+      "name": "登录-密码",
+      "font_class": "denglu-mima",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    }
+  ]
+}
