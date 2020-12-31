@@ -6,15 +6,15 @@
     <!--  main content  -->
     <span>
       <span>
-        <a>FTSI: LEAP-1C-FTSI-{{ detailForm['FTSI']['ftsi_num'] }} Rev. {{ detailForm['FTSI']['rev'] }}</a><br>
-        <a>FTSI Title: {{ detailForm['FTSI']['ftsi_title'] }}</a><br>
-        <a>Compliance Statement: {{ detailForm['FTSI']['statement'] }}</a><br>
-        <a>Monitor Type: {{ detailForm['FTSI']['dep_type'] }}</a><br>
-        <a>Period: {{ detailForm['FTSI']['period'] }}</a>
+        <a>FTSI: LEAP-1C-FTSI-{{ FTSIinfo.ftsi_num}} Rev. {{ FTSIinfo.rev}}</a><br>
+        <a>FTSI Title: {{ FTSIinfo.ftsi_title}}</a><br>
+        <a>Compliance Statement: {{ FTSIinfo.statement }}</a><br>
+        <a>Monitor Type: {{ FTSIinfo.dep_type }}</a><br>
+        <a>Period: {{ FTSIinfo.period }}</a>
       </span>
 
       <!--   table area: FTSI for different engines   -->
-      <el-table :data="detailForm['ipsDetail']" border stripe
+      <el-table :data="detailForm" border stripe
                 :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}">
         <el-table-column label="Applied IPS" prop="engine_id"></el-table-column>
         <el-table-column label="Last implement date" prop="last_date"></el-table-column>
@@ -22,7 +22,7 @@
         <el-table-column label="Residual times" prop="residual_times"></el-table-column>
         <el-table-column label="Status" width="80" align="center">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.active"></el-switch>
+            <el-switch v-model="scope.row.active_status" @change="statusChanged(scope.row)"></el-switch>
           </template>
         </el-table-column>
         <el-table-column label="Operation" width="100" align="center">
@@ -49,8 +49,15 @@ export default {
     return {
       dialogVisible: false,
       //查询到的FTSI的细节信息
-      detailForm: {}
-
+      detailForm: {},
+      FTSIinfo: {
+        ftsi_num: '',
+        rev: '',
+        ftsi_title: '',
+        statement: '',
+        dep_type: '',
+        period: ''
+      }
     }
   },
   methods: {
@@ -59,11 +66,23 @@ export default {
     },
     async showFTSIDetail(id) {
       const {data: res} = await this.$http.get('ftsiMgr/detailFTSI/', {params: {'id': id}})
+      console.log(res)
       if (res.meta.status !== 200) {
         return this.$message.error('failed to get the FTSI details!')
       }
-      this.detailForm = res.data;
+      this.detailForm = res.data['ipsDetail'];
+      this.FTSIinfo = res.data['FTSI'];
       this.dialogVisible = true;
+    },
+    //监听状态的改变
+    async statusChanged(stateInfo) {
+      console.log(stateInfo)
+      const {data: res} = await this.$http.put('ftsiMgr/detailFTSI/statusChange/',
+        {'id': stateInfo.id, 'active_status': stateInfo.active_status})
+      if(res.meta.status!==200){
+        stateInfo.active_status=!stateInfo.active_status
+        return this.$message.error('failed to update the status of the applied IPS')
+      }
     }
   }
 }

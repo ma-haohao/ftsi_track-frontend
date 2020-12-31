@@ -4,6 +4,7 @@ import Login from '../components/Login.vue'
 import Home from '../components/Home.vue'
 import Welcome from "../components/Welcome.vue";
 import FtsiList from '../components/FtsiMgr/FtsiList.vue'
+import TaskQuery from '../components/FtsiOperation/taskQuery.vue'
 
 Vue.use(Router)
 
@@ -14,7 +15,8 @@ const router = new Router({
     {path:'/home',component:Home,redirect: '/welcome',
       children:[
         {path:'/welcome',component:Welcome},
-        {path:'/ftsilist',component: FtsiList}
+        {path:'/ftsilist',component: FtsiList},
+        {path:'/taskquery',component: TaskQuery}
       ]}
   ]
 })
