@@ -75,7 +75,7 @@
                     <el-select placeholder="Please choice" v-model="item.type">
                       <el-option v-for="item in monitorType.slice(0,-1)" :label="item[1]" :value="item[0]"></el-option>
                     </el-select>
-                    <el-button type="info" style="margin-left: 20px" @click="deleteCusMonitor">Delete</el-button>
+                    <el-button type="info" style="margin-left: 20px" @click="deleteCusMonitor(item)">Delete</el-button>
                   </el-form-item>
               </el-form-item>
               <el-form-item label="Period">
@@ -253,7 +253,7 @@ export default {
       })
     },
     deleteCusMonitor(item, index) {
-      this.index = this.addForm.customizePara.monitorParam.indexOf(item)
+      var index = this.addForm.customizePara.monitorParam.indexOf(item)
       if (index !== -1) {
         this.addForm.customizePara.monitorParam.splice(index, 1)
       }
@@ -292,14 +292,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.shortInputForm {
-  width: 193px;
-}
-
-.longInputForm {
-  width: 580px;
-}
-
 .customizeForm {
   margin-left: 30px;
 }

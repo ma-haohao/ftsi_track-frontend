@@ -47,7 +47,8 @@
                 <template slot-scope="scope">
                   <!--     文件编辑按钮       -->
                   <el-tooltip effect="dark" content="Edit" placement="top" :enterable="false">
-                    <el-button type="warning" icon="el-icon-edit" size="mini"></el-button>
+                    <el-button type="warning" icon="el-icon-edit" size="mini"
+                               @click="openEditDetailDialog(scope.row.id)"></el-button>
                   </el-tooltip>
                 </template>
               </el-table-column>
@@ -77,7 +78,8 @@
                 <template slot-scope="scope">
                   <!--     文件编辑按钮       -->
                   <el-tooltip effect="dark" content="Edit" placement="top" :enterable="false">
-                    <el-button type="warning" icon="el-icon-edit" size="mini"></el-button>
+                    <el-button type="warning" icon="el-icon-edit" size="mini"
+                               @click="openEditDetailDialog(scope.row.id)"></el-button>
                   </el-tooltip>
                 </template>
               </el-table-column>
@@ -86,12 +88,15 @@
         </el-col>
       </el-row>
     </div>
+    <editDetail ref="editDetailRef"></editDetail>
   </div>
-
 </template>
 
 <script>
 export default {
+  components: {
+    editDetail: () => import("../FtsiMgr/editDetailDialog")
+  },
   created() {
     this.getSelectBar()
   },
@@ -137,6 +142,9 @@ export default {
       } else if (row.reminds === 'warning' && column.label === 'Comments') {
         return 'background:#FFD102'
       }
+    },
+    openEditDetailDialog(id) {
+      this.$refs.editDetailRef.init(id)
     }
   }
 }
