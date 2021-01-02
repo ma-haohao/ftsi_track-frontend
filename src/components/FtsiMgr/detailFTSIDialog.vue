@@ -11,7 +11,7 @@
         <a>Compliance Statement: {{ detailForm['FTSI']['statement'] }}</a><br>
         <a>Monitor Type: {{ detailForm['FTSI']['dep_type'] }}</a><br>
         <a>Period: {{ detailForm['FTSI']['period'] }}</a>
-      </span>
+      </span>gity
 
       <!--   table area: FTSI for different engines   -->
       <el-table :data="detailForm['ipsDetail']" border stripe
