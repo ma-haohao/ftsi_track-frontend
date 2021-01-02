@@ -59,7 +59,7 @@ export default {
         '201': 'iconfont icon-databaseset-fill',
         '301': 'iconfont icon-user-fill'
       },
-      isCollapse: false,
+      isCollapse: true,
       activePath:''
     }
   },

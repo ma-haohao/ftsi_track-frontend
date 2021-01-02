@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 100%">
     <!--  breakcrumb navigation  -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">Home</el-breadcrumb-item>
@@ -8,14 +8,14 @@
     </el-breadcrumb>
     <!--  选择栏  -->
     <div class="select_bar">
-      <el-row :gutter="50">
-        <el-col :span="10">
-          <el-radio-group v-model="queryForm.aircraftMSN" @change="getFTSIforAifcraft">
+      <el-row :gutter="0">
+        <el-col :span="9">
+          <el-radio-group v-model="queryForm.aircraftMSN" @change="getFTSIforAifcraft" size="small">
             <el-radio-button v-for="item in aircraftList" :label="item"></el-radio-button>
           </el-radio-group>
         </el-col>
         <el-col :span="8">
-          <el-radio-group v-model="queryForm.typeSelect" @change="getFTSIforAifcraft">
+          <el-radio-group v-model="queryForm.typeSelect" @change="getFTSIforAifcraft" size="small">
             <el-radio-button v-for="item in typeList" :label="item"></el-radio-button>
           </el-radio-group>
         </el-col>
@@ -27,21 +27,23 @@
         <!--  左发数据  -->
         <el-col :span="12">
           <el-card style="height:100%;width:100%">
-            <h2>LHE: {{leftIPS}}</h2>
+            <h2>LHE: {{ leftIPS }}</h2>
             <el-table :data="leftForm" border stripe
-                      :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}" style="font-size: 10px">
+                      :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}" style="font-size: 10px"
+                      :cell-style="changeTrStyle">
               <el-table-column label="FTSI Num." prop="ftsi_info.ftsi_num,ftsi_info.rev" width="110">
-                <template slot-scope="scope"> {{scope.row.ftsi_info.ftsi_num}} Rev. {{scope.row.ftsi_info.rev}}</template>
-              </el-table-column>
-              <el-table-column label="Last implement date" prop="last_date"></el-table-column>
-              <el-table-column label="Type" prop="ftsi_info.dep_type"></el-table-column>
-              <el-table-column label="Comments" prop="comments"></el-table-column>
-              <el-table-column label="Status" width="80" align="center">
-                <template slot-scope="scope">
-                  <el-switch v-model="scope.row.active_status" @change="statusChanged(scope.row)"></el-switch>
+                <template slot-scope="scope"> {{ scope.row.ftsi_info.ftsi_num }} Rev. {{ scope.row.ftsi_info.rev }}
                 </template>
               </el-table-column>
-              <el-table-column label="Operation" width="100" align="center">
+              <el-table-column label="Last implement" prop="last_date"></el-table-column>
+              <el-table-column label="Current type" prop="current_type"></el-table-column>
+              <el-table-column label="Comments" prop="comments"></el-table-column>
+              <!--              <el-table-column label="Status" width="80" align="center">
+                              <template slot-scope="scope">
+                                <el-switch v-model="scope.row.active_status" @change="statusChanged(scope.row)"></el-switch>
+                              </template>
+                            </el-table-column>-->
+              <el-table-column label="Opt." width="70" align="center">
                 <template slot-scope="scope">
                   <!--     文件编辑按钮       -->
                   <el-tooltip effect="dark" content="Edit" placement="top" :enterable="false">
@@ -55,21 +57,23 @@
         <!--  右发数据  -->
         <el-col :span="12">
           <el-card style="height:100%;width:100%">
-            <h2>RHE: {{rightIPS}}</h2>
+            <h2>RHE: {{ rightIPS }}</h2>
             <el-table :data="rightForm" border stripe
-                      :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}" style="font-size: 10px">
+                      :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}" style="font-size: 10px"
+                      :cell-style="changeTrStyle">
               <el-table-column label="FTSI Num." prop="ftsi_info.ftsi_num,ftsi_info.rev" width="110">
-                <template slot-scope="scope"> {{scope.row.ftsi_info.ftsi_num}} Rev. {{scope.row.ftsi_info.rev}}</template>
-              </el-table-column>
-              <el-table-column label="Last implement date" prop="last_date"></el-table-column>
-              <el-table-column label="Type" prop="ftsi_info.dep_type"></el-table-column>
-              <el-table-column label="Comments" prop="comments"></el-table-column>
-              <el-table-column label="Status" width="80" align="center">
-                <template slot-scope="scope">
-                  <el-switch v-model="scope.row.active_status" @change="statusChanged(scope.row)"></el-switch>
+                <template slot-scope="scope"> {{ scope.row.ftsi_info.ftsi_num }} Rev. {{ scope.row.ftsi_info.rev }}
                 </template>
               </el-table-column>
-              <el-table-column label="Operation" width="100" align="center">
+              <el-table-column label="Last implement" prop="last_date"></el-table-column>
+              <el-table-column label="Current type" prop="current_type"></el-table-column>
+              <el-table-column label="Comments" prop="comments"></el-table-column>
+              <!--              <el-table-column label="Status" width="80" align="center">
+                              <template slot-scope="scope">
+                                <el-switch v-model="scope.row.active_status" @change="statusChanged(scope.row)"></el-switch>
+                              </template>
+                            </el-table-column>-->
+              <el-table-column label="Opt." width="70" align="center">
                 <template slot-scope="scope">
                   <!--     文件编辑按钮       -->
                   <el-tooltip effect="dark" content="Edit" placement="top" :enterable="false">
@@ -94,18 +98,18 @@ export default {
   data() {
     return {
       //记录选择项的值，用于传回后端来进行查询
-      queryForm:{
+      queryForm: {
         aircraftMSN: '',
-        typeSelect: '',
+        typeSelect: 'All',
       },
       //从后端获取选择项的列表
       aircraftList: [],
       typeList: [],
       //左发与右发中FTSI的表格数据
-      leftIPS:'',
-      rightIPS:'',
-      leftForm:[],
-      rightForm:[],
+      leftIPS: '',
+      rightIPS: '',
+      leftForm: [],
+      rightForm: [],
     }
   },
   methods: {
@@ -116,7 +120,7 @@ export default {
       this.typeList = res.data.type_list
     },
     async getFTSIforAifcraft() {
-      if(this.aircraftMSN==='') return
+      if (this.aircraftMSN === '') return
       const {data: res} = await this.$http.get('ftsiOpt/ftsiforAircraft/', {params: this.queryForm})
       console.log(res)
       if (res.meta.status !== 200) {
@@ -124,20 +128,29 @@ export default {
       }
       this.leftIPS = res.data.leftIPS.engine
       this.rightIPS = res.data.rightIPS.engine
-      this.leftForm=res.data.ftsiForLeft
-      this.rightForm=res.data.ftsiForRight
+      this.leftForm = res.data.ftsiForLeft
+      this.rightForm = res.data.ftsiForRight
     },
+    changeTrStyle({row, column, rowIndex, columnIndex}) {
+      if (row.reminds === 'attention' && column.label === 'Comments') {
+        return 'background:#FE5E02'
+      } else if (row.reminds === 'warning' && column.label === 'Comments') {
+        return 'background:#FFD102'
+      }
+    }
   }
 }
 </script>
 
 <style lang="less" scoped>
 .select_bar {
-  width: 1500px;
+  width: 100%;
   margin-bottom: 15px;
 }
+
 .ftsi_list {
-  width: 1650px;
+  width: 100%;
   margin-bottom: 15px;
+  font-size: 15px;
 }
 </style>

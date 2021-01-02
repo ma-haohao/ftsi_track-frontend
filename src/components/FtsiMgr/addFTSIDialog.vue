@@ -41,20 +41,36 @@
           <el-form-item label="Trigger">
             <el-col :span="9">
               <el-form-item>
-                <el-select placeholder="Please choice" v-model="addForm.customizePara.trigger.type">
+                <el-select placeholder="Please choice" v-model="addForm.customizePara.trigger.type"
+                           @change="paraShowControl">
                   <el-option v-for="item in triggerType" :label="item[1]" :value="item[0]"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="13">
-              <el-form-item label="Parameter">
-                <el-input class="shortInputForm" v-model="addForm.customizePara.trigger.parameter"></el-input>
-              </el-form-item>
+              <div v-show="showTriggerFTSI">
+                <el-form-item label="FTSI num." prop="customizePara.trigger.parameter" class="required"
+                              :rules="[{required: showTriggerFTSI, message: 'please enter the related FTSI', trigger: 'blur'},
+                              {validator:onlyNum}]">
+                  <el-input class="shortInputForm" v-model="addForm.customizePara.trigger.parameter"></el-input>
+                </el-form-item>
+              </div>
+              <div v-show="showTriggerDate">
+                <el-form-item label="Date" prop="customizePara.trigger.parameter" class="required"
+                              :rules="[{required: showTriggerDate, message: 'please choose the start date', trigger: 'blur'}]">
+                  <el-date-picker v-model="addForm.customizePara.trigger.parameter" type="date"
+                                  placeholder="Choose date"
+                                  style="width:190px" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+                </el-form-item>
+              </div>
             </el-col>
           </el-form-item>
           <!--  customize中可增加的monitor type(动态), 最大数量为3  -->
           <div v-for="(item,index) in addForm.customizePara.monitorParam" :key="item.key">
-              <el-form-item :label="'Monitor Type '+(index+1)">
+              <el-form-item :label="'Monitor Type '+(index+1)"
+                            :prop="'customizePara.monitorParam.'+index+'.type'"
+                            class="required"
+                            :rules="[{required: showCustomizeForm, message:'please choose the monitor type', trigger: 'change'}]">
                   <el-form-item>
                     <el-select placeholder="Please choice" v-model="item.type">
                       <el-option v-for="item in monitorType.slice(0,-1)" :label="item[1]" :value="item[0]"></el-option>
@@ -69,7 +85,10 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="13">
-                  <el-form-item label="Total Times">
+                  <el-form-item label="Total Times" :prop="'customizePara.monitorParam.'+index+'.times'"
+                                class="required"
+                                :rules="[{required: showCustomizeForm, message:'please enter total times', trigger: 'blur'},
+                                {validator:onlyNum}]">
                     <el-input class="shortInputForm" v-model="item.times"></el-input>
                   </el-form-item>
                 </el-col>
@@ -87,9 +106,11 @@
                 <el-input class="shortInputForm" v-model="addForm.period"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="10">
+            <el-col :span="13">
               <!--   执行频率区域     -->
-              <el-form-item label="Total Times">
+              <el-form-item label="Total Times" prop="times" class="required"
+                            :rules="[{required: !this.showCustomizeForm, message: 'please enter total times', trigger: 'blur'},
+                            {validator:onlyNum}]">
                 <el-input class="shortInputForm" v-model="addForm.times"></el-input>
               </el-form-item>
             </el-col>
@@ -114,6 +135,7 @@
 export default {
   name: "addFTSI",
   data() {
+    //自定义transfer框中的内容
     const generateIPSData = _ => {
       const data = [];
       for (let i = 1; i <= 15; i++) {
@@ -123,14 +145,36 @@ export default {
         });
       }
       return data;
-    };
+    }
+    /*自定义校验规则区域*/
+    //FTSI num rules
+    var checkonlyNumRules = (rule, value, callback) => {
+      const regFTSInum = /^[0-9_]*$/
+      if (!regFTSInum.test(value)) {
+        callback(new Error('The format of the input is illegal'))
+      } else {
+        callback()
+      }
+    }
+    var checkRevRules = (rule, value, callback) => {
+      const regRev = /^[A-Z]{1}$/
+      if (!regRev.test(value)) {
+        callback(new Error('The format of the Rev. is illegal'))
+      } else {
+        callback()
+      }
+    }
+    /*参数区域*/
     return {
       IPSdata: generateIPSData(),
       dialogVisible: false,
       activeDisabled: false,
       monitorType: [], /*监控的类型*/
       triggerType: [], /*FTSI的激活类型*/
-      showCustomizeForm: false, /*激活自定义类型所需的表单*/
+      /*控制部分表单元素的可视与否*/
+      showCustomizeForm: false,
+      showTriggerFTSI: false,
+      showTriggerDate: false,
       addForm: {
         FTSI_num: '',
         revision: '',
@@ -142,10 +186,10 @@ export default {
         appliedIPS: [],
         customizePara: {
           trigger: {
-            type: 'NO',
+            type: 'NA',
             parameter: ''
           },
-          monitorParam:[{
+          monitorParam: [{
             type: '',
             period: '',
             times: '',
@@ -155,19 +199,18 @@ export default {
       addFormRules: {
         FTSI_num: [
           {required: true, message: 'please enter the FTSI number', trigger: 'blur'},
+          {validator: checkonlyNumRules, trigger: 'blur'}
         ],
         revision: [
           {required: true, message: 'please enter the Revision', trigger: 'blur'},
+          {validator: checkRevRules, trigger: 'blur'}
         ],
         type: [
           {required: true, message: 'please choose the monitor type', trigger: 'change'},
         ],
-        times: [
-          {required: true, message: 'please enter total implement times', trigger: 'blur'},
-        ],
         appliedIPS: [
           {required: true, message: 'At least one IPS must be chosen', trigger: 'change'},
-        ],
+        ]
       }
     }
   },
@@ -175,6 +218,14 @@ export default {
     init() {
       this.dialogVisible = true;
       this.getTypeAddFTSI()
+    },
+    onlyNum(rule, value, callback) {
+      const regNum = /^[0-9_-]*$/
+      if (!regNum.test(value)) {
+        callback(new Error('The format of the input is illegal'))
+      } else {
+        callback()
+      }
     },
     //监听添加对话框的关闭事件
     addDialogClose() {
@@ -193,15 +244,15 @@ export default {
         return this.showCustomizeForm = true
       } else this.showCustomizeForm = false
     },
-    addCusMonitor(){
-      if(this.addForm.customizePara.monitorParam.length>2) return this.$message.error('The amount must be no more than 3!')
+    addCusMonitor() {
+      if (this.addForm.customizePara.monitorParam.length > 2) return this.$message.error('The amount must be no more than 3!')
       this.addForm.customizePara.monitorParam.push({
         type: '',
         period: '',
         times: '',
       })
     },
-    deleteCusMonitor(item,index){
+    deleteCusMonitor(item, index) {
       this.index = this.addForm.customizePara.monitorParam.indexOf(item)
       if (index !== -1) {
         this.addForm.customizePara.monitorParam.splice(index, 1)
@@ -221,7 +272,21 @@ export default {
         this.dialogVisible = false
         this.$parent.getFTSIList()
       })
-    }
+    },
+    //控制trigger的输入参数的显示
+    paraShowControl() {
+      this.addForm.customizePara.trigger.parameter = ''
+      if (this.addForm.customizePara.trigger.type === 'NA') {
+        this.showTriggerFTSI = false
+        this.showTriggerDate = false
+      } else if (this.addForm.customizePara.trigger.type === 'TFTSI') {
+        this.showTriggerFTSI = true
+        this.showTriggerDate = false
+      } else {
+        this.showTriggerFTSI = false
+        this.showTriggerDate = true
+      }
+    },
   }
 }
 </script>

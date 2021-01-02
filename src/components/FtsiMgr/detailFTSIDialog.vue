@@ -2,7 +2,7 @@
   <el-dialog
       title="Condition for Applied IPS"
       :visible.sync="dialogVisible"
-      width="900px">
+      width="1000px">
     <!--  main content  -->
     <span>
       <span>
@@ -16,8 +16,9 @@
       <!--   table area: FTSI for different engines   -->
       <el-table :data="detailForm" border stripe
                 :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}">
-        <el-table-column label="Applied IPS" prop="engine_id"></el-table-column>
+        <el-table-column label="Applied IPS" prop="engine_id" width="110"></el-table-column>
         <el-table-column label="Last implement date" prop="last_date"></el-table-column>
+        <el-table-column label="Current type" prop="current_type"></el-table-column>
         <el-table-column label="Next target" prop="next_target"></el-table-column>
         <el-table-column label="Residual times" prop="residual_times"></el-table-column>
         <el-table-column label="Status" width="80" align="center">
