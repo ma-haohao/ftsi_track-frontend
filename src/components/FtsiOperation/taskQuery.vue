@@ -145,6 +145,9 @@ export default {
     },
     openEditDetailDialog(id) {
       this.$refs.editDetailRef.init(id)
+    },
+    updateList(){
+      this.getFTSIforAifcraft()
     }
   }
 }

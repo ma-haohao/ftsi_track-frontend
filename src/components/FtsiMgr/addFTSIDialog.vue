@@ -7,7 +7,7 @@
     <span>
       <el-form ref="addFormRef" label-width="150px" :model="addForm" :rules="addFormRules">
         <!--   FTSI号区域     -->
-        <el-form-item label="FTSI Number" prop="FTSI_num">
+        <el-form-item label="FTSI Number" prop="FTSI_num" class="required">
           <el-row :gutter="0">
             <el-col :span="9">
               <el-input class="shortInputForm" v-model="addForm.FTSI_num"></el-input>
@@ -22,11 +22,11 @@
           <el-input class="shortInputForm" v-model="addForm.revision"></el-input>
         </el-form-item>
         <!--   FTSI title区域     -->
-        <el-form-item label="FTSI Title" v-show="true">
+        <el-form-item label="FTSI Title" prop="FTSI_title">
           <el-input type="textarea" class="longInputForm" v-model="addForm.FTSI_title"></el-input>
         </el-form-item>
         <!--   Compliance Statement区域     -->
-        <el-form-item label="Compliance Stat.">
+        <el-form-item label="Compliance Stat." prop="compliance">
           <el-input type="textarea" class="longInputForm" v-model="addForm.compliance"></el-input>
         </el-form-item>
         <!--   监控类型区域     -->
@@ -40,7 +40,7 @@
           <!--   初始激活项       -->
           <el-form-item label="Trigger">
             <el-col :span="9">
-              <el-form-item>
+              <el-form-item prop="customizePara.trigger.type">
                 <el-select placeholder="Please choice" v-model="addForm.customizePara.trigger.type"
                            @change="paraShowControl">
                   <el-option v-for="item in triggerType" :label="item[1]" :value="item[0]"></el-option>
@@ -80,7 +80,7 @@
               </el-form-item>
               <el-form-item label="Period">
                 <el-col :span="9">
-                  <el-form-item>
+                  <el-form-item :prop="'customizePara.monitorParam.'+index+'.period'">
                     <el-input class="shortInputForm" v-model="item.period"></el-input>
                   </el-form-item>
                 </el-col>
@@ -102,7 +102,7 @@
           <!--   执行周期区域     -->
           <el-form-item label="Period">
             <el-col :span="9">
-              <el-form-item>
+              <el-form-item prop="period">
                 <el-input class="shortInputForm" v-model="addForm.period"></el-input>
               </el-form-item>
             </el-col>
@@ -231,6 +231,8 @@ export default {
     addDialogClose() {
       this.$refs.addFormRef.resetFields()
       this.showCustomizeForm = false
+      this.showTriggerFTSI = false
+      this.showTriggerDate = false
     },
     //获取添加FTSI时下拉菜单的权限
     async getTypeAddFTSI() {
@@ -242,7 +244,11 @@ export default {
     monitorTypeCheck() {
       if (this.addForm.type === 'CUS') {
         return this.showCustomizeForm = true
-      } else this.showCustomizeForm = false
+      } else {
+        this.showCustomizeForm = false
+        this.showTriggerFTSI=false
+        this.showTriggerDate=false
+      }
     },
     addCusMonitor() {
       if (this.addForm.customizePara.monitorParam.length > 2) return this.$message.error('The amount must be no more than 3!')

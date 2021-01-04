@@ -5,7 +5,7 @@
       width="800px" :close-on-click-modal="false" @close="editDialogClose">
     <!--  main content  -->
     <span>
-      <el-form ref="editDetailFormRef" label-width="150px" :model="editDetailForm">
+      <el-form ref="editDetailFormRef" label-width="150px" :model="editDetailForm" @close="editDetailClose">
         <!--   FTSI号区域     -->
         <el-form-item label="FTSI Num">
           <el-input class="shortInputForm"
@@ -28,19 +28,34 @@
             </el-form-item>
           </el-col>
           <el-col :span="13">
-            <!--   执行频率区域     -->
+            <!--   执行类型区域     -->
             <el-form-item label="Monitor type">
               <el-input class="shortInputForm" :value="editDetailForm.dep_type" disabled></el-input>
             </el-form-item>
           </el-col>
         </el-form-item>
+        <!--   上一次执行的时间区域     -->
         <el-form-item label="Last Implement Date">
           <el-input class="shortInputForm" v-model="editDetailForm.last_date"></el-input>
         </el-form-item>
-        <el-form-item label="Next Target">
-          <el-input class="shortInputForm" v-model="editDetailForm.next_target"></el-input>
-          <a> FH</a>
+        <!--    Customize的情况下分段选择区域    -->
+        <el-form-item label="Customize Step" v-show="showCustomizeType">
+          <el-select placeholder="Please choice" v-model="editDetailForm.current_type" @change="customizeTypeJudge">
+                  <el-option v-for="item in editDetailForm.customize" :label="item.type_value+': '+item.type_label" :value="item.type_value"></el-option>
+                </el-select>
         </el-form-item>
+        <!-- 下次执行时间区域-type1-->
+        <el-form-item label="Next Target" v-show="showType1">
+          <el-input class="shortInputForm" v-model="editDetailForm.next_target" @blur="calLeftTime"></el-input>
+          <a> {{ editDetailForm.unit }}, {{ left_time }} {{ editDetailForm.unit }} left.</a>
+        </el-form-item>
+        <!--   下次执行时间区域-type2 for date    -->
+        <el-form-item label="Next Target" v-show="showType2">
+          <el-date-picker v-model="editDetailForm.dateStorage" type="date"
+                          placeholder="Choose date"
+                          style="width:190px" format="yyyy-MM-dd" value-format="yyyy-MM-dd" @blur="dateTransfer"></el-date-picker>
+        </el-form-item>
+        <!--   剩余次数区域     -->
         <el-form-item label="Residual Times">
           <el-input class="shortInputForm" v-model="editDetailForm.residual_times"></el-input>
         </el-form-item>
@@ -49,7 +64,7 @@
     <!--  foot area  -->
     <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">Cancel</el-button>
-    <el-button type="primary" @click="dialogVisible = false">Submit</el-button>
+    <el-button type="primary" @click="editDetailInfo">Submit</el-button>
   </span>
   </el-dialog>
 </template>
@@ -61,11 +76,16 @@ export default {
     return {
       dialogVisible: false,
       editDetailForm: {
-        ftsi_info: {
-          engine_info:{},
-          customize: {}
-        }
-      }
+        engine_info: {},
+        customize: {},
+        dateStorage:''
+      },
+      left_time: "",
+      //用于控制不同type下的表单可视与否
+      showType1:'',
+      showType2:'',
+      showCustomizeType:'',
+      dateStorage:''
     }
   },
   methods: {
@@ -78,12 +98,69 @@ export default {
       }
       console.log(res)
       this.editDetailForm = res.data.ftsi2ipsInfo
+      this.typeJudge()
       this.dialogVisible = true;
+      this.calLeftTime()
+    },
+    //监听表单关闭事件
+    editDetailClose(){
+      this.$refs.editDetailFormRef.resetFields()
+    },
+    //监听monitor type参数，并且返回对应该类型所用的表格类型
+    isInArray(arr,value){
+      for(var i = 0; i < arr.length; i++){
+        if(value === arr[i]){
+          return true;
+        }}
+      return false
+    },
+    typeJudge(){
+      const arr=['On condition','Up to date','trigger_factor']
+      const arr2=['dep_type1','dep_type2','dep_type3']
+      var current_type=''
+      this.showCustomizeType =this.isInArray(['Customize'], this.editDetailForm.dep_type);
+      if (this.isInArray(arr2,this.editDetailForm.current_type)){
+        current_type=this.editDetailForm.customize[this.editDetailForm.current_type]['type_label']
+      }else{current_type=this.editDetailForm.current_type}
+      this.showType1 = !this.isInArray(arr, current_type);
+      this.showType2 =this.isInArray(['Up to date'],current_type);
+    },
+    customizeTypeJudge(){
+      this.typeJudge()
+      if(this.editDetailForm.current_type!=='trigger_factor'){
+        var current_type=this.editDetailForm.customize[this.editDetailForm.current_type]
+        if(current_type!=='Up to date'){
+          this.editDetailForm.next_target=(this.editDetailForm.engine_info[current_type['DB_keyword']]+parseInt(current_type['period']))+''
+        }else{
+          this.editDetailForm.next_target=''
+        }
+        this.editDetailForm.residual_times=current_type['total_times']
+        this.editDetailForm.DB_keyword=current_type['DB_keyword']
+        this.editDetailForm.unit=current_type['unit']
+        this.calLeftTime()
+      }
     },
     //监听添加对话框的关闭事件
     editDialogClose() {
       this.$refs.editDetailFormRef.resetFields()
     },
+    //监听Next_target的变化，并得到剩余时间的变化值
+    calLeftTime() {
+      this.left_time = (parseFloat(this.editDetailForm.next_target) - this.editDetailForm.engine_info[this.editDetailForm.DB_keyword]).toFixed(0)
+    },
+    dateTransfer(){
+      this.editDetailForm.next_target=this.editDetailForm.dateStorage
+      //console.log(this.editDetailForm.next_target)
+    },
+    async editDetailInfo(){
+      const {data:res}=await this.$http.put('ftsiMgr/detailFTSI/infoChange/',this.editDetailForm)
+      if(res.meta.status!==200){
+        return this.$message.error(res.meta.msg)
+      }
+      this.dialogVisible=false
+      this.$message.success(res.meta.msg)
+      this.$parent.updateList()
+    }
   }
 }
 </script>
