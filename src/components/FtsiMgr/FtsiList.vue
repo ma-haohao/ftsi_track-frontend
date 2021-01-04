@@ -130,7 +130,7 @@ export default {
     },
     opendEditDialog() {
       this.$refs.editFTSIRef.init()
-    }
+    },
   }
 }
 </script>

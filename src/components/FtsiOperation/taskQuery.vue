@@ -23,18 +23,36 @@
     </div>
     <!--  表单栏，左右发动机的数据  -->
     <div class="ftsi_list">
-      <el-row :gutter="20">
-        <!--  左发数据  -->
-        <el-col :span="12">
-          <el-card style="height:100%;width:100%">
-            <h2>LHE: {{ leftIPS }}</h2>
+      <el-card style="height:100%;width:100%">
+        <!--    预测栏    -->
+        <el-form :inline="true" class="demo-form-inline" :model="predictForm" :rules="predictFormRules" ref="predictFormRules">
+          <el-form-item label="Flight day" prop="flightDay">
+            <el-input v-model="predictForm.flightDay"></el-input>
+          </el-form-item>
+          <el-form-item label="Flight hour" prop="flightHour">
+            <el-input v-model="predictForm.flightHour"></el-input>
+          </el-form-item>
+          <el-form-item label="Engine hour" prop="engineHour">
+            <el-input v-model="predictForm.engineHour"></el-input>
+          </el-form-item>
+          <el-form-item label="C1 cycle" prop="c1Cycle">
+            <el-input v-model="predictForm.c1Cycle"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="predictAction">Predict</el-button>
+          </el-form-item>
+        </el-form>
+        <!--   发动机数据   -->
+        <el-tabs type="card" v-model="activeName" @tab-click="handleClick">
+          <el-tab-pane :label="'LHE: '+leftIPS" name="first">
             <el-table :data="leftForm" border stripe
-                      :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}" style="font-size: 10px"
+                      :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}" style="font-size: 13px"
                       :cell-style="changeTrStyle">
               <el-table-column label="FTSI Num." prop="ftsi_info.ftsi_num,ftsi_info.rev" width="110">
                 <template slot-scope="scope"> {{ scope.row.ftsi_info.ftsi_num }} Rev. {{ scope.row.ftsi_info.rev }}
                 </template>
               </el-table-column>
+              <el-table-column label="FTSI Title" prop="ftsi_info.ftsi_title"></el-table-column>
               <el-table-column label="Last implement" prop="last_date"></el-table-column>
               <el-table-column label="Current type" prop="current_type"></el-table-column>
               <el-table-column label="Comments" prop="comments"></el-table-column>
@@ -53,19 +71,16 @@
                 </template>
               </el-table-column>
             </el-table>
-          </el-card>
-        </el-col>
-        <!--  右发数据  -->
-        <el-col :span="12">
-          <el-card style="height:100%;width:100%">
-            <h2>RHE: {{ rightIPS }}</h2>
+          </el-tab-pane>
+          <el-tab-pane :label="'RHE: '+rightIPS" name="second">
             <el-table :data="rightForm" border stripe
-                      :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}" style="font-size: 10px"
+                      :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}" style="font-size: 13px"
                       :cell-style="changeTrStyle">
               <el-table-column label="FTSI Num." prop="ftsi_info.ftsi_num,ftsi_info.rev" width="110">
                 <template slot-scope="scope"> {{ scope.row.ftsi_info.ftsi_num }} Rev. {{ scope.row.ftsi_info.rev }}
                 </template>
               </el-table-column>
+              <el-table-column label="FTSI Title" prop="ftsi_info.ftsi_title"></el-table-column>
               <el-table-column label="Last implement" prop="last_date"></el-table-column>
               <el-table-column label="Current type" prop="current_type"></el-table-column>
               <el-table-column label="Comments" prop="comments"></el-table-column>
@@ -84,29 +99,66 @@
                 </template>
               </el-table-column>
             </el-table>
-          </el-card>
-        </el-col>
-      </el-row>
+          </el-tab-pane>
+        </el-tabs>
+      </el-card>
     </div>
-    <editDetail ref="editDetailRef"></editDetail>
+    <editDetail ref="editDetailRef" v-on:updateList="getFTSIforAifcraft"></editDetail>
+    <predict-result ref="predictResultRef"></predict-result>
+
   </div>
 </template>
 
 <script>
 export default {
   components: {
-    editDetail: () => import("../FtsiMgr/editDetailDialog")
+    editDetail: () => import("../FtsiMgr/editDetailDialog"),
+    predictResult: () => import("./predictResultDisplay")
   },
   created() {
     this.getSelectBar()
   },
   data() {
+    var onlyNum = (rule, value, callback) => {
+      const regFTSInum = /^[0-9.]*$/
+      if (!regFTSInum.test(value)) {
+        callback(new Error('The format of the input is illegal'))
+      } else {
+        callback()
+      }
+    }
     return {
       //记录选择项的值，用于传回后端来进行查询
+      activeName: 'first',
       queryForm: {
         aircraftMSN: '',
         typeSelect: 'All',
       },
+      predictForm:{
+        flightDay:1,
+        flightHour:5,
+        engineHour:5,
+        c1Cycle:1,
+        aircraftMSN:''
+      },
+      predictFormRules:{
+        flightDay: [
+        {required: true, message: 'please enter the FTSI number', trigger: 'blur'},
+          {validator: onlyNum, trigger: 'blur'}
+      ],
+        flightHour: [
+        {required: true, message: 'please enter the Revision', trigger: 'blur'},
+            {validator: onlyNum, trigger: 'blur'}
+      ],
+        engineHour: [
+        {required: true, message: 'please choose the monitor type', trigger: 'change'},
+            {validator: onlyNum, trigger: 'blur'}
+      ],
+        c1Cycle: [
+        {required: true, message: 'At least one IPS must be chosen', trigger: 'change'},
+            {validator: onlyNum, trigger: 'blur'}
+      ]
+    },
       //从后端获取选择项的列表
       aircraftList: [],
       typeList: [],
@@ -118,6 +170,9 @@ export default {
     }
   },
   methods: {
+    handleClick(tab, event) {
+      console.log(tab, event);
+    },
     async getSelectBar() {
       const {data: res} = await this.$http.get('ftsiOpt/selectBar/')
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
@@ -146,8 +201,19 @@ export default {
     openEditDetailDialog(id) {
       this.$refs.editDetailRef.init(id)
     },
-    updateList(){
-      this.getFTSIforAifcraft()
+    //发起预测请求
+    predictAction(){
+      this.$refs.predictFormRules.validate(async valid => {
+        if (!valid) return
+        //可以发起添加请求
+        this.predictForm.aircraftMSN=this.queryForm.aircraftMSN
+        const {data: res} = await this.$http.get('ftsiOpt/predictFTSI/',{params:this.predictForm})
+        if (res.meta.status !== 200) {
+          this.$message.error(res.meta.msg)
+        }
+        this.$message.success(res.meta.msg)
+        this.$refs.predictResultRef.init(res.data)
+      })
     }
   }
 }
@@ -162,6 +228,6 @@ export default {
 .ftsi_list {
   width: 100%;
   margin-bottom: 15px;
-  font-size: 15px;
+  font-size: 20px;
 }
 </style>

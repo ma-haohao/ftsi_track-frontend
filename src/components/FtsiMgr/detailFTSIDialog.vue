@@ -6,8 +6,8 @@
     <!--  main content  -->
     <span>
       <span>
-        <a>FTSI: LEAP-1C-FTSI-{{ FTSIinfo.ftsi_num}} Rev. {{ FTSIinfo.rev}}</a><br>
-        <a>FTSI Title: {{ FTSIinfo.ftsi_title}}</a><br>
+        <a>FTSI: LEAP-1C-FTSI-{{ FTSIinfo.ftsi_num }} Rev. {{ FTSIinfo.rev }}</a><br>
+        <a>FTSI Title: {{ FTSIinfo.ftsi_title }}</a><br>
         <a>Compliance Statement: {{ FTSIinfo.statement }}</a><br>
         <a>Monitor Type: {{ FTSIinfo.dep_type }}</a><br>
         <a>Period: {{ FTSIinfo.period }}</a>
@@ -30,25 +30,30 @@
           <template slot-scope="scope">
             <!--     文件编辑按钮       -->
             <el-tooltip effect="dark" content="Edit" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-edit" size="mini"></el-button>
+              <el-button type="warning" icon="el-icon-edit" size="mini"
+                         @click="openEditDetailDialog(scope.row.id)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
+      <editDetail ref="editDetailRef" v-on:updateList="showFTSIDetail(ftsi_id)"></editDetail>
     </span>
     <!--  foot area  -->
     <span slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="dialogVisible = false">Close</el-button>
-  </span>
+      <el-button type="primary" @click="dialogVisible = false">Close</el-button>
+    </span>
   </el-dialog>
 </template>
 
 <script>
 export default {
-  name: "addFTSI",
+  components: {
+    editDetail: () => import("./editDetailDialog")
+  },
   data() {
     return {
       dialogVisible: false,
+      ftsi_id:'',
       //查询到的FTSI的细节信息
       detailForm: {},
       FTSIinfo: {
@@ -63,10 +68,11 @@ export default {
   },
   methods: {
     init(id) {
-      this.showFTSIDetail(id);
+      this.ftsi_id=id;
+      this.showFTSIDetail();
     },
-    async showFTSIDetail(id) {
-      const {data: res} = await this.$http.get('ftsiMgr/detailFTSI/', {params: {'id': id}})
+    async showFTSIDetail() {
+      const {data: res} = await this.$http.get('ftsiMgr/detailFTSI/', {params: {'id': this.ftsi_id}})
       console.log(res)
       if (res.meta.status !== 200) {
         return this.$message.error('failed to get the FTSI details!')
@@ -79,12 +85,15 @@ export default {
     async statusChanged(stateInfo) {
       console.log(stateInfo)
       const {data: res} = await this.$http.put('ftsiMgr/detailFTSI/statusChange/',
-        {'id': stateInfo.id, 'active_status': stateInfo.active_status})
-      if(res.meta.status!==200){
-        stateInfo.active_status=!stateInfo.active_status
+          {'id': stateInfo.id, 'active_status': stateInfo.active_status})
+      if (res.meta.status !== 200) {
+        stateInfo.active_status = !stateInfo.active_status
         return this.$message.error('failed to update the status of the applied IPS')
       }
-    }
+    },
+    openEditDetailDialog(id) {
+      this.$refs.editDetailRef.init(id)
+    },
   }
 }
 </script>

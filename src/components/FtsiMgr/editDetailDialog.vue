@@ -2,15 +2,23 @@
   <el-dialog
       title="Edit FTSI instance for different IPS"
       :visible.sync="dialogVisible"
-      width="800px" :close-on-click-modal="false" @close="editDialogClose">
+      width="800px" :close-on-click-modal="false" @close="editDialogClose" append-to-body>
     <!--  main content  -->
     <span>
       <el-form ref="editDetailFormRef" label-width="150px" :model="editDetailForm" @close="editDetailClose">
         <!--   FTSI号区域     -->
         <el-form-item label="FTSI Num">
-          <el-input class="shortInputForm"
-                    :value="editDetailForm.ftsi_num"
-                    disabled></el-input>
+          <el-col :span="9">
+            <el-form-item>
+            <el-input class="shortInputForm" :value="editDetailForm.ftsi_num" disabled></el-input>
+          </el-form-item>
+          </el-col>
+          <el-col :span="13">
+            <!--   激活状态    -->
+            <el-form-item label="Status">
+              <el-switch v-model="editDetailForm.active_status"></el-switch>
+            </el-form-item>
+          </el-col>
         </el-form-item>
         <!--   FTSI title区域     -->
         <el-form-item label="FTSI Title" v-show="true">
@@ -159,7 +167,7 @@ export default {
       }
       this.dialogVisible=false
       this.$message.success(res.meta.msg)
-      this.$parent.updateList()
+      this.$emit('updateList')
     }
   }
 }
