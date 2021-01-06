@@ -52,7 +52,10 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      results: {}
+      results: {
+        leftIPS:{},
+        rightIPS:{}
+      }
     }
   },
   methods: {
