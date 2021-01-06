@@ -27,7 +27,7 @@
               </el-form-item>
               <el-form-item>
                 <el-button type="warning" @click="checkFTSIinfo(leftEngineForm)">Check</el-button>
-                <el-button type="primary">Submit</el-button>
+                <el-button type="primary" @click="submitFTSIinfo(leftEngineForm)">Submit</el-button>
               </el-form-item>
             </el-form>
             <span style="width: 100%">
@@ -131,6 +131,17 @@ export default {
         const {data:res}=await this.$http.get('ftsiOpt/checkFTSIinfo/',{params:engineForm})
         console.log(res)
         this.leftCheckResult=res.data.FTSI_info
+        if (res.data.warning_info!==""){this.attentionDialogOpen(res.data.warning_info)}
+      })
+    },
+    async submitFTSIinfo(engineForm){
+      if(engineForm.engineNum===''){return this.$message.error('Please select the aircraft first.')}
+      this.$refs.leftEngineRef.validate(async valid => {
+        if (!valid) return
+        //可以发起添加请求
+        const {data:res}=await this.$http.get('ftsiOpt/submitFTSIinfo/',{params:engineForm})
+        if (res.meta.status!==200){return this.$message.error('failed to submit the info')}
+        this.$message.success(res.meta.msg)
         if (res.data.warning_info!==""){this.attentionDialogOpen(res.data.warning_info)}
       })
     },
