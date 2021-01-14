@@ -43,7 +43,7 @@
             </el-tooltip>
             <!--     文件编辑按钮       -->
             <el-tooltip effect="dark" content="Edit" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-edit" size="mini" @click="opendEditDialog"></el-button>
+              <el-button type="warning" icon="el-icon-edit" size="mini" @click="opendEditDialog(scope.row.id)"></el-button>
             </el-tooltip>
             <!--     文件升版按钮       -->
             <el-tooltip effect="dark" content="Update" placement="top" :enterable="false">
@@ -128,8 +128,8 @@ export default {
     opendDetailDialog(id) {
       this.$refs.detailFTSIRef.init(id)
     },
-    opendEditDialog() {
-      this.$refs.editFTSIRef.init()
+    opendEditDialog(id) {
+      this.$refs.editFTSIRef.init(id)
     },
   }
 }
