@@ -7,10 +7,10 @@
     <span>
       <el-form ref="addFormRef" label-width="150px" :model="addForm" :rules="addFormRules">
         <!--   FTSI号区域     -->
-        <el-form-item label="FTSI Number" prop="FTSI_num" class="required">
+        <el-form-item label="FTSI Number" prop="ftsi_num" class="required">
           <el-row :gutter="0">
             <el-col :span="9">
-              <el-input class="shortInputForm" v-model="addForm.FTSI_num"></el-input>
+              <el-input class="shortInputForm" v-model="addForm.ftsi_num"></el-input>
             </el-col>
             <el-col :span="4">
               <el-button type="primary">Check</el-button>
@@ -18,20 +18,20 @@
           </el-row>
         </el-form-item>
         <!--   版本号区域     -->
-        <el-form-item label="Rev." prop="revision" class="required">
-          <el-input class="shortInputForm" v-model="addForm.revision"></el-input>
+        <el-form-item label="Rev." prop="rev" class="required">
+          <el-input class="shortInputForm" v-model="addForm.rev"></el-input>
         </el-form-item>
         <!--   FTSI title区域     -->
-        <el-form-item label="FTSI Title" prop="FTSI_title">
-          <el-input type="textarea" class="longInputForm" v-model="addForm.FTSI_title"></el-input>
+        <el-form-item label="FTSI Title" prop="ftsi_title">
+          <el-input type="textarea" class="longInputForm" v-model="addForm.ftsi_title"></el-input>
         </el-form-item>
         <!--   Compliance Statement区域     -->
-        <el-form-item label="Compliance Stat." prop="compliance">
-          <el-input type="textarea" class="longInputForm" v-model="addForm.compliance"></el-input>
+        <el-form-item label="Compliance Stat." prop="statement">
+          <el-input type="textarea" class="longInputForm" v-model="addForm.statement"></el-input>
         </el-form-item>
         <!--   监控类型区域     -->
-        <el-form-item label="Monitor Type" prop="type" class="required">
-          <el-select placeholder="Please choice" v-model="addForm.type" @change="monitorTypeCheck">
+        <el-form-item label="Monitor Type" prop="dep_type" class="required">
+          <el-select placeholder="Please choice" v-model="addForm.dep_type" @change="monitorTypeCheck">
             <el-option v-for="item in monitorType" :label="item[1]" :value="item[0]"></el-option>
           </el-select>
         </el-form-item>
@@ -108,10 +108,10 @@
             </el-col>
             <el-col :span="13">
               <!--   执行频率区域     -->
-              <el-form-item label="Total Times" prop="times" class="required"
+              <el-form-item label="Total Times" prop="total_times" class="required"
                             :rules="[{required: !this.showCustomizeForm, message: 'please enter total times', trigger: 'blur'},
                             {validator:onlyNum}]">
-                <el-input class="shortInputForm" v-model="addForm.times"></el-input>
+                <el-input class="shortInputForm" v-model="addForm.total_times"></el-input>
               </el-form-item>
             </el-col>
           </el-form-item>
@@ -176,13 +176,13 @@ export default {
       showTriggerFTSI: false,
       showTriggerDate: false,
       addForm: {
-        FTSI_num: '',
-        revision: '',
-        FTSI_title: '',
-        compliance: '',
-        type: '',
+        ftsi_num: '',
+        rev: '',
+        ftsi_title: '',
+        statement: '',
+        dep_type: '',
         period: '',
-        times: '',
+        total_times: '',
         appliedIPS: [],
         customizePara: {
           trigger: {
@@ -197,15 +197,15 @@ export default {
         }
       },
       addFormRules: {
-        FTSI_num: [
+        ftsi_num: [
           {required: true, message: 'please enter the FTSI number', trigger: 'blur'},
           {validator: checkonlyNumRules, trigger: 'blur'}
         ],
-        revision: [
+        rev: [
           {required: true, message: 'please enter the Revision', trigger: 'blur'},
           {validator: checkRevRules, trigger: 'blur'}
         ],
-        type: [
+        dep_type: [
           {required: true, message: 'please choose the monitor type', trigger: 'change'},
         ],
         appliedIPS: [
@@ -242,7 +242,9 @@ export default {
       this.triggerType = res.data.triggerType
     },
     monitorTypeCheck() {
-      if (this.addForm.type === 'CUS') {
+      if (this.addForm.dep_type === 'CUS') {
+        this.addForm.total_times=1
+        this.addForm.period=''
         return this.showCustomizeForm = true
       } else {
         this.showCustomizeForm = false

@@ -106,10 +106,10 @@
               </el-col>
               <el-col :span="13">
                 <!--   执行频率区域     -->
-                <el-form-item label="Total Times" prop="times" class="required"
+                <el-form-item label="Total Times" prop="total_times" class="required"
                               :rules="[{required: !this.showCustomizeForm, message: 'please enter total times', trigger: 'blur'},
                               {validator:onlyNum}]">
-                  <el-input class="shortInputForm" v-model="editForm.times"></el-input>
+                  <el-input class="shortInputForm" v-model="editForm.total_times"></el-input>
                 </el-form-item>
               </el-col>
             </el-form-item>
@@ -130,7 +130,7 @@
     <!--  foot area  -->
     <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">Cancel</el-button>
-      <el-button type="primary">Submit</el-button>
+      <el-button type="primary" @click="editFTSI">Submit</el-button>
     </span>
   </el-dialog>
 </template>
@@ -235,6 +235,17 @@ export default {
         callback()
       }
     },
+    async editFTSI(){
+      this.editForm.modifyType=this.modifyType;
+      this.editForm.modifyRange=this.modifyRange;
+      const {data:res}=await this.$http.put('ftsiMgr/editFTSI/',this.editForm)
+      if (res.meta.status !== 200) {
+        this.$message.error(res.meta.msg)
+      }
+      this.$message.success(res.meta.msg)
+      this.dialogVisible = false
+      this.$parent.getFTSIList()
+    },
     //监听添加对话框的关闭事件
     editDialogClose() {
       this.$refs.editFormRef.resetFields()
@@ -250,6 +261,8 @@ export default {
     },
     monitorTypeCheck() {
       if (this.editForm.dep_type === 'CUS') {
+        this.editForm.total_times=1
+        this.editForm.period=''
         return this.showCustomizeForm = true
       } else {
         this.showCustomizeForm = false
