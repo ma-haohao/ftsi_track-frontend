@@ -47,7 +47,7 @@
             </el-tooltip>
             <!--     文件升版按钮       -->
             <el-tooltip effect="dark" content="Update" placement="top" :enterable="false">
-              <el-button type="success" icon="el-icon-upload2" size="mini" @click="opendUpdateDialog"></el-button>
+              <el-button type="success" icon="el-icon-upload2" size="mini" @click="opendUpdateDialog(scope.row.id)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -122,8 +122,8 @@ export default {
     openAddDialog() {
       this.$refs.addFTSIRef.init()
     },
-    opendUpdateDialog() {
-      this.$refs.updateFTSIRef.init()
+    opendUpdateDialog(id) {
+      this.$refs.updateFTSIRef.init(id)
     },
     opendDetailDialog(id) {
       this.$refs.detailFTSIRef.init(id)

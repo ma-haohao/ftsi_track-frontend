@@ -8,14 +8,7 @@
       <el-form ref="addFormRef" label-width="150px" :model="addForm" :rules="addFormRules">
         <!--   FTSI号区域     -->
         <el-form-item label="FTSI Number" prop="ftsi_num" class="required">
-          <el-row :gutter="0">
-            <el-col :span="9">
-              <el-input class="shortInputForm" v-model="addForm.ftsi_num"></el-input>
-            </el-col>
-            <el-col :span="4">
-              <el-button type="primary">Check</el-button>
-            </el-col>
-          </el-row>
+          <el-input class="shortInputForm" v-model="addForm.ftsi_num"></el-input>
         </el-form-item>
         <!--   版本号区域     -->
         <el-form-item label="Rev." prop="rev" class="required">
@@ -199,7 +192,8 @@ export default {
       addFormRules: {
         ftsi_num: [
           {required: true, message: 'please enter the FTSI number', trigger: 'blur'},
-          {validator: checkonlyNumRules, trigger: 'blur'}
+          {validator: checkonlyNumRules, trigger: 'blur'},
+          {validator: this.validateFTSIexist, trigger: 'blur'},
         ],
         rev: [
           {required: true, message: 'please enter the Revision', trigger: 'blur'},
@@ -217,7 +211,7 @@ export default {
   methods: {
     init() {
       this.dialogVisible = true;
-      this.getTypeAddFTSI()
+      this.getTypeFTSI()
     },
     onlyNum(rule, value, callback) {
       const regNum = /^[0-9_-]*$/
@@ -227,6 +221,16 @@ export default {
         callback()
       }
     },
+    /*验证该项是否存在原数据库中*/
+    async validateFTSIexist(rule,value,callback){
+      if (!value){
+        return callback()
+      }
+      const {data:res}=await this.$http.get('ftsiMgr/FTSInumExistCheck/',{params:{ftsi_num:this.addForm.ftsi_num}})
+      if (res.meta.status===200){
+        callback(new Error(res.meta.msg))
+      } else{callback()}
+    },
     //监听添加对话框的关闭事件
     addDialogClose() {
       this.$refs.addFormRef.resetFields()
@@ -235,7 +239,7 @@ export default {
       this.showTriggerDate = false
     },
     //获取添加FTSI时下拉菜单的权限
-    async getTypeAddFTSI() {
+    async getTypeFTSI() {
       const {data: res} = await this.$http.get('ftsiMgr/paraforAddFTSI/')
       if (res.meta.status !== 200) this.$message.error('failed to get the type list')
       this.monitorType = res.data.monitorType

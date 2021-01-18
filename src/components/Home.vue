@@ -57,7 +57,8 @@ export default {
       iconsObj: {
         '101': 'iconfont icon-database-fill',
         '201': 'iconfont icon-databaseset-fill',
-        '301': 'iconfont icon-user-fill'
+        '301': 'iconfont icon-bg-history',
+        '401': 'iconfont icon-user-fill'
       },
       isCollapse: true,
       activePath:''

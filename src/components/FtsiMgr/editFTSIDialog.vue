@@ -216,7 +216,7 @@ export default {
     init(id) {
       this.dialogVisible = true;
       console.log(id)
-      this.getTypeAddFTSI()
+      this.getTypeFTSI()
       this.getFTSIInfo(id)
     },
 
@@ -236,15 +236,19 @@ export default {
       }
     },
     async editFTSI(){
-      this.editForm.modifyType=this.modifyType;
-      this.editForm.modifyRange=this.modifyRange;
-      const {data:res}=await this.$http.put('ftsiMgr/editFTSI/',this.editForm)
-      if (res.meta.status !== 200) {
-        this.$message.error(res.meta.msg)
-      }
-      this.$message.success(res.meta.msg)
-      this.dialogVisible = false
-      this.$parent.getFTSIList()
+      this.$refs.editFormRef.validate(async valid => {
+        if (!valid) return
+        //可以发起添加请求
+        this.editForm.modifyType = this.modifyType;
+        this.editForm.modifyRange = this.modifyRange;
+        const {data: res} = await this.$http.put('ftsiMgr/editFTSI/', this.editForm)
+        if (res.meta.status !== 200) {
+          this.$message.error(res.meta.msg)
+        }
+        this.$message.success(res.meta.msg)
+        this.dialogVisible = false
+        this.$parent.getFTSIList()
+      })
     },
     //监听添加对话框的关闭事件
     editDialogClose() {
@@ -253,7 +257,7 @@ export default {
       this.modifyType = false
     },
     //获取添加FTSI时下拉菜单的权限
-    async getTypeAddFTSI() {
+    async getTypeFTSI() {
       const {data: res} = await this.$http.get('ftsiMgr/paraforAddFTSI/')
       if (res.meta.status !== 200) this.$message.error('failed to get the type list')
       this.monitorType = res.data.monitorType
