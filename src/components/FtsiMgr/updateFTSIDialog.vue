@@ -251,6 +251,7 @@ export default {
         this.updateForm.modifyType = this.modifyType;
         this.updateForm.modifyRange = this.modifyRange;
         const {data: res} = await this.$http.put('ftsiMgr/updateFTSI/', this.updateForm)
+        console.log(res)
         if (res.meta.status !== 200) {
           this.$message.error(res.meta.msg)
         }
@@ -299,7 +300,6 @@ export default {
     },
     //控制trigger的输入参数的显示
     paraShowControl() {
-      this.updateForm.customizePara.trigger.parameter = ''
       if (this.updateForm.customizePara.trigger.type === 'NA') {
         this.showTriggerFTSI = false
         this.showTriggerDate = false

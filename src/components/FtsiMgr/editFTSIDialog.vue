@@ -290,7 +290,6 @@ export default {
     },
     //控制trigger的输入参数的显示
     paraShowControl() {
-      this.editForm.customizePara.trigger.parameter = ''
       if (this.editForm.customizePara.trigger.type === 'NA') {
         this.showTriggerFTSI = false
         this.showTriggerDate = false

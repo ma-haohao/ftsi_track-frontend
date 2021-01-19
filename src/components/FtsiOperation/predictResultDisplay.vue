@@ -37,7 +37,6 @@
           </el-table-column>
         </el-table>
       </div>
-
     </span>
     <!--  foot area  -->
     <span slot="footer" class="dialog-footer">
@@ -64,7 +63,6 @@ export default {
       this.dialogVisible = true
       console.log(this.results)
     },
-
   }
 }
 </script>
