@@ -45,6 +45,7 @@
         <!--   发动机数据   -->
         <el-tabs type="card" v-model="activeName" @tab-click="handleClick">
           <el-tab-pane :label="'LHE: '+leftIPS" name="first">
+            <span>Total: {{amountLeft}}</span>
             <el-table :data="leftForm" border stripe
                       :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}" style="font-size: 13px"
                       :cell-style="changeTrStyle">
@@ -56,11 +57,6 @@
               <el-table-column label="Last implement" prop="last_date"></el-table-column>
               <el-table-column label="Current type" prop="current_type"></el-table-column>
               <el-table-column label="Comments" prop="comments"></el-table-column>
-              <!--              <el-table-column label="Status" width="80" align="center">
-                              <template slot-scope="scope">
-                                <el-switch v-model="scope.row.active_status" @change="statusChanged(scope.row)"></el-switch>
-                              </template>
-                            </el-table-column>-->
               <el-table-column label="Opt." width="70" align="center">
                 <template slot-scope="scope">
                   <!--     文件编辑按钮       -->
@@ -73,6 +69,7 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane :label="'RHE: '+rightIPS" name="second">
+            <span>Total: {{amountRight}}</span>
             <el-table :data="rightForm" border stripe
                       :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}" style="font-size: 13px"
                       :cell-style="changeTrStyle">
@@ -84,11 +81,6 @@
               <el-table-column label="Last implement" prop="last_date"></el-table-column>
               <el-table-column label="Current type" prop="current_type"></el-table-column>
               <el-table-column label="Comments" prop="comments"></el-table-column>
-              <!--              <el-table-column label="Status" width="80" align="center">
-                              <template slot-scope="scope">
-                                <el-switch v-model="scope.row.active_status" @change="statusChanged(scope.row)"></el-switch>
-                              </template>
-                            </el-table-column>-->
               <el-table-column label="Opt." width="70" align="center">
                 <template slot-scope="scope">
                   <!--     文件编辑按钮       -->
@@ -165,6 +157,8 @@ export default {
       //左发与右发中FTSI的表格数据
       leftIPS: '',
       rightIPS: '',
+      amountLeft:'',
+      amountRight:'',
       leftForm: [],
       rightForm: [],
     }
@@ -190,6 +184,8 @@ export default {
       this.rightIPS = res.data.rightIPS.engine
       this.leftForm = res.data.ftsiForLeft
       this.rightForm = res.data.ftsiForRight
+      this.amountLeft=res.data.amountLeft
+      this.amountRight=res.data.amountRight
     },
     changeTrStyle({row, column, rowIndex, columnIndex}) {
       if (row.reminds === 'attention' && column.label === 'Comments') {
