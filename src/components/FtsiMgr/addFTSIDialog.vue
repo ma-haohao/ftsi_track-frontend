@@ -227,7 +227,7 @@ export default {
         return callback()
       }
       const {data:res}=await this.$http.get('ftsiMgr/FTSInumExistCheck/',{params:{ftsi_num:this.addForm.ftsi_num}})
-      if (res.meta.status===200){
+      if (res.meta.status!==200){
         callback(new Error(res.meta.msg))
       } else{callback()}
     },

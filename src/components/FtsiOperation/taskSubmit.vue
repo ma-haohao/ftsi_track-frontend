@@ -22,9 +22,9 @@
                 <el-input v-model="leftEngineForm.implementFTSI"
                           placeholder="The number of the FTSIs, separated by  ' / ' "></el-input>
               </el-form-item>
-              <el-form-item label="Date">
+              <el-form-item label="Date" prop="implementDate">
                 <el-date-picker type="date" placeholder="Choose the implement date" style="width:240px"
-                                format="yyyy-MM-dd"
+                                format="yyyy-MM-dd" v-model="leftEngineForm.implementDate"
                                 value-format="yyyy-MM-dd"></el-date-picker>
               </el-form-item>
               <el-form-item>
@@ -53,9 +53,9 @@
                 <el-input v-model="rightEngineForm.implementFTSI"
                           placeholder="The number of the FTSIs, separated by  ' / ' "></el-input>
               </el-form-item>
-              <el-form-item label="Date">
+              <el-form-item label="Date" prop="implementDate">
                 <el-date-picker type="date" placeholder="Choose the implement date" style="width:240px"
-                                format="yyyy-MM-dd"
+                                format="yyyy-MM-dd" v-model="rightEngineForm.implementDate"
                                 value-format="yyyy-MM-dd"></el-date-picker>
               </el-form-item>
               <el-form-item>
@@ -110,11 +110,13 @@ export default {
       aircraftList: [],
       leftEngineForm: {
         engineNum: '',
-        implementFTSI: ''
+        implementFTSI: '',
+        implementDate:''
       },
       rightEngineForm: {
         engineNum: '',
-        implementFTSI: ''
+        implementFTSI: '',
+        implementDate:''
       },
       leftCheckResult: [],
       rightCheckResult: [],
@@ -122,7 +124,9 @@ export default {
         implementFTSI: [
           {required: true, message: 'please enter the FTSI number', trigger: 'blur'},
           {validator: checkonlyNumRules, trigger: 'blur'}
-        ]
+        ],
+        implementDate: [
+          {required: true, message: 'please enter the implement Date', trigger: 'blur'}]
       }
     }
   },
@@ -165,7 +169,7 @@ export default {
       validateRef.validate(async valid => {
         if (!valid) return
         //可以发起添加请求
-        const {data: res} = await this.$http.get('ftsiOpt/submitFTSIinfo/', {params: engineForm})
+        const {data: res} = await this.$http.put('ftsiOpt/submitFTSIinfo/', engineForm)
         if (res.meta.status !== 200) {
           return this.$message.error('failed to submit the info')
         }

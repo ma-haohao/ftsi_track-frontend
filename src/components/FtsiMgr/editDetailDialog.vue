@@ -105,7 +105,7 @@ export default {
         return this.$message.error('failed to obtain the info')
       }
       console.log(res)
-      this.editDetailForm = res.data.ftsi2ipsInfo
+      this.editDetailForm = res.data
       this.typeJudge()
       this.dialogVisible = true;
       this.calLeftTime()

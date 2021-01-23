@@ -40,7 +40,7 @@
               <el-col :span="9">
                 <el-form-item prop="customizePara.trigger.type">
                   <el-select placeholder="Please choice" v-model="editForm.customizePara.trigger.type"
-                             @change="paraShowControl">
+                             @change="paraShowChange">
                     <el-option v-for="item in triggerType" :label="item[1]" :value="item[0]"></el-option>
                   </el-select>
                 </el-form-item>
@@ -301,6 +301,10 @@ export default {
         this.showTriggerDate = true
       }
     },
+    paraShowChange(){
+      this.editForm.customizePara.trigger.parameter=''
+      this.paraShowControl()
+    }
   }
 }
 </script>

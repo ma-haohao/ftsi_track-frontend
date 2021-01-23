@@ -42,6 +42,18 @@
             <el-button type="primary" @click="predictAction">Predict</el-button>
           </el-form-item>
         </el-form>
+        <!--  搜索栏    -->
+        <div class="select_input">
+          <el-input placeholder="Please enter what you are searching for" v-model="queryForm.input"
+                    class="input-with-select" @keyup.enter.native="getFTSIforAifcraft" clearable>
+            <el-select v-model="queryForm.select" slot="prepend" placeholder="According to">
+              <el-option label="FTSI Num." value="ftsi_num"></el-option>
+              <el-option label="FTSI Title" value="ftsi_title"></el-option>
+              <el-option label="Compliance State." value="statement"></el-option>
+            </el-select>
+            <el-button slot="append" icon="el-icon-search" @click="getFTSIforAifcraft"></el-button>
+          </el-input>
+        </div>
         <!--   发动机数据   -->
         <el-tabs type="card" v-model="activeName" @tab-click="handleClick">
           <el-tab-pane :label="'LHE: '+leftIPS" name="first">
@@ -55,7 +67,7 @@
               </el-table-column>
               <el-table-column label="FTSI Title" prop="ftsi_info.ftsi_title"></el-table-column>
               <el-table-column label="Last implement" prop="last_date"></el-table-column>
-              <el-table-column label="Current type" prop="current_type"></el-table-column>
+              <el-table-column label="Compliance Statement" prop="ftsi_info.statement" width="500"></el-table-column>
               <el-table-column label="Comments" prop="comments"></el-table-column>
               <el-table-column label="Opt." width="70" align="center">
                 <template slot-scope="scope">
@@ -79,7 +91,7 @@
               </el-table-column>
               <el-table-column label="FTSI Title" prop="ftsi_info.ftsi_title"></el-table-column>
               <el-table-column label="Last implement" prop="last_date"></el-table-column>
-              <el-table-column label="Current type" prop="current_type"></el-table-column>
+              <el-table-column label="Compliance Statement" prop="ftsi_info.statement" width="500"></el-table-column>
               <el-table-column label="Comments" prop="comments"></el-table-column>
               <el-table-column label="Opt." width="70" align="center">
                 <template slot-scope="scope">
@@ -123,6 +135,8 @@ export default {
       //记录选择项的值，用于传回后端来进行查询
       activeName: 'first',
       queryForm: {
+        select: '',
+        input: '',
         aircraftMSN: '',
         typeSelect: 'All',
       },
@@ -174,11 +188,11 @@ export default {
       this.typeList = res.data.type_list
     },
     async getFTSIforAifcraft() {
-      if (this.aircraftMSN === '') return
+      if (this.aircraftMSN === '') return this.$message.error('Please select the aircraft first.')
       const {data: res} = await this.$http.get('ftsiOpt/ftsiforAircraft/', {params: this.queryForm})
       console.log(res)
       if (res.meta.status !== 200) {
-        return this.$message.error('failed to get the FTSI list')
+        return this.$message.error(res.meta.msg)
       }
       this.leftIPS = res.data.leftIPS.engine
       this.rightIPS = res.data.rightIPS.engine
@@ -205,7 +219,7 @@ export default {
         this.predictForm.aircraftMSN=this.queryForm.aircraftMSN
         const {data: res} = await this.$http.get('ftsiOpt/predictFTSI/',{params:this.predictForm})
         if (res.meta.status !== 200) {
-          this.$message.error(res.meta.msg)
+          return this.$message.error(res.meta.msg)
         }
         this.$message.success(res.meta.msg)
         this.$refs.predictResultRef.init(res.data)
@@ -225,5 +239,14 @@ export default {
   width: 100%;
   margin-bottom: 15px;
   font-size: 20px;
+}
+
+.el-select {
+  width: 150px;
+}
+
+.select_input{
+  width:40%;
+  margin-bottom: 15px;
 }
 </style>

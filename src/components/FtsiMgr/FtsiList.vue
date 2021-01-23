@@ -17,7 +17,6 @@
               <el-option label="FTSI Num." value="ftsi_num"></el-option>
               <el-option label="FTSI Title" value="ftsi_title"></el-option>
               <el-option label="Type" value="dep_type"></el-option>
-
             </el-select>
             <el-button slot="append" icon="el-icon-search" @click="getFTSIList"></el-button>
           </el-input>
