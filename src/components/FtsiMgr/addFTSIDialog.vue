@@ -49,9 +49,9 @@
                 </el-form-item>
               </div>
               <div v-show="showTriggerDate">
-                <el-form-item label="Date" prop="customizePara.trigger.parameter" class="required"
+                <el-form-item label="Date" prop="triggerDateForm" class="required"
                               :rules="[{required: showTriggerDate, message: 'please choose the start date', trigger: 'blur'}]">
-                  <el-date-picker v-model="addForm.customizePara.trigger.parameter" type="date"
+                  <el-date-picker v-model="addForm.triggerDateForm" type="date"
                                   placeholder="Choose date"
                                   style="width:190px" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
                 </el-form-item>
@@ -169,6 +169,7 @@ export default {
       showTriggerFTSI: false,
       showTriggerDate: false,
       addForm: {
+        triggerDateForm: '',
         ftsi_num: '',
         rev: '',
         ftsi_title: '',
@@ -274,6 +275,7 @@ export default {
     addFTSI() {
       this.$refs.addFormRef.validate(async valid => {
         if (!valid) return
+        if(this.showTriggerDate===true){this.addForm.customizePara.trigger.parameter=this.addForm.triggerDateForm}
         //可以发起添加请求
         const {data: res} = await this.$http.post('ftsiMgr/addFTSI/', this.addForm)
         console.log(res)

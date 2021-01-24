@@ -54,9 +54,9 @@
                   </el-form-item>
                 </div>
                 <div v-show="showTriggerDate">
-                  <el-form-item label="Date" prop="customizePara.trigger.parameter" class="required"
+                  <el-form-item label="Date" prop="triggerDateForm" class="required"
                                 :rules="[{required: showTriggerDate, message: 'please choose the start date', trigger: 'blur'}]">
-                    <el-date-picker v-model="editForm.customizePara.trigger.parameter" type="date"
+                    <el-date-picker v-model="editForm.triggerDateForm" type="date"
                                     placeholder="Choose date"
                                     style="width:190px" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
                   </el-form-item>
@@ -180,6 +180,7 @@ export default {
       showTriggerFTSI: false,
       showTriggerDate: false,
       editForm: {
+        triggerDateForm:'',
         customizePara: {
           trigger: {
             type: 'NA',
@@ -225,6 +226,7 @@ export default {
       this.editForm=res.data
       this.monitorTypeCheck()
       this.paraShowControl()
+      if(this.showTriggerDate===true){this.editForm.triggerDateForm=this.editForm.customizePara.trigger.parameter}
       console.log(this.editForm)
     },
     onlyNum(rule, value, callback) {
@@ -241,6 +243,7 @@ export default {
         //可以发起添加请求
         this.editForm.modifyType = this.modifyType;
         this.editForm.modifyRange = this.modifyRange;
+        if(this.showTriggerDate===true){this.editForm.customizePara.trigger.parameter=this.editForm.triggerDateForm}
         const {data: res} = await this.$http.put('ftsiMgr/editFTSI/', this.editForm)
         if (res.meta.status !== 200) {
           this.$message.error(res.meta.msg)

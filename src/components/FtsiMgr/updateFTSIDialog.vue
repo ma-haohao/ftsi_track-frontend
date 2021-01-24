@@ -40,7 +40,7 @@
               <el-col :span="9">
                 <el-form-item prop="customizePara.trigger.type">
                   <el-select placeholder="Please choice" v-model="updateForm.customizePara.trigger.type"
-                             @change="paraShowControl">
+                             @change="paraShowChange">
                     <el-option v-for="item in triggerType" :label="item[1]" :value="item[0]"></el-option>
                   </el-select>
                 </el-form-item>
@@ -54,9 +54,9 @@
                   </el-form-item>
                 </div>
                 <div v-show="showTriggerDate">
-                  <el-form-item label="Date" prop="customizePara.trigger.parameter" class="required"
+                  <el-form-item label="Date" prop="triggerDateForm" class="required"
                                 :rules="[{required: showTriggerDate, message: 'please choose the start date', trigger: 'blur'}]">
-                    <el-date-picker v-model="updateForm.customizePara.trigger.parameter" type="date"
+                    <el-date-picker v-model="updateForm.triggerDateForm" type="date"
                                     placeholder="Choose date"
                                     style="width:190px" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
                   </el-form-item>
@@ -181,7 +181,9 @@ export default {
       showTriggerDate: false,
       revOriginal:'',
       updateForm: {
+
         customizePara: {
+          triggerDateForm:'',
           trigger: {
             type: 'NA',
             parameter: ''
@@ -234,6 +236,7 @@ export default {
       this.revOriginal=this.updateForm.rev
       this.monitorTypeCheck()
       this.paraShowControl()
+      if(this.showTriggerDate===true){this.updateForm.triggerDateForm=this.updateForm.customizePara.trigger.parameter}
       console.log(this.updateForm)
     },
     onlyNum(rule, value, callback) {
@@ -250,6 +253,7 @@ export default {
         //可以发起添加请求
         this.updateForm.modifyType = this.modifyType;
         this.updateForm.modifyRange = this.modifyRange;
+        if(this.showTriggerDate===true){this.updateForm.customizePara.trigger.parameter=this.updateForm.triggerDateForm}
         const {data: res} = await this.$http.put('ftsiMgr/updateFTSI/', this.updateForm)
         console.log(res)
         if (res.meta.status !== 200) {
@@ -311,6 +315,10 @@ export default {
         this.showTriggerDate = true
       }
     },
+    paraShowChange(){
+      this.updateForm.customizePara.trigger.parameter=''
+      this.paraShowControl()
+    }
   }
 }
 </script>
