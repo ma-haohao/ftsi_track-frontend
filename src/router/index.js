@@ -6,6 +6,7 @@ import Welcome from "../components/Welcome.vue";
 import FtsiList from '../components/FtsiMgr/FtsiList.vue'
 import TaskQuery from '../components/FtsiOperation/taskQuery.vue'
 import TaskSubmit from '../components/FtsiOperation/taskSubmit.vue'
+import CacheArea from '../components/FtsiOperation/cacheArea.vue'
 
 Vue.use(Router)
 
@@ -18,6 +19,7 @@ const router = new Router({
         {path:'/welcome',component:Welcome},
         {path:'/ftsilist',component: FtsiList},
         {path:'/taskquery',component: TaskQuery},
+        {path:'/cacheArea',component: CacheArea},
         {path:'/tasksubmit',component: TaskSubmit},
       ]}
   ]
