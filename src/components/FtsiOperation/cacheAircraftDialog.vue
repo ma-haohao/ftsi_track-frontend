@@ -39,14 +39,16 @@ export default {
     }
   },
   methods: {
-    init() {
+    async init() {
       this.dialogVisible = true
+      const {data:res}=await this.$http.get('userOpt/obrtainCachedAircraft/')
+      this.cachedAircraft.aircraftNum=res.data
     },
     async changeCachedAircraft(){
       const {data:res}=await this.$http.put('userOpt/changeCachedArea/', this.cachedAircraft)
       console.log(res)
-
       this.dialogVisible = false
+      this.$parent.getSelectBar()
     }
   }
 }

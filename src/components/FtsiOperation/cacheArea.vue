@@ -186,9 +186,9 @@ export default {
     },
     async getSelectBar() {
       const {data: res} = await this.$http.get('ftsiOpt/selectBar/')
-      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
-      this.aircraftList = res.data.aircraft_list
+      const {data: res1} = await this.$http.get('userOpt/obrtainCachedAircraft/')
       this.typeList = res.data.type_list
+      this.aircraftList = res1.data
     },
     async getFTSIforAifcraft() {
       if (this.aircraftMSN === '') return this.$message.error('Please select the aircraft first.')
