@@ -21,6 +21,7 @@
     <!--  表单栏，左右发动机的数据  -->
     <div class="ftsi_list">
       <el-card style="height:100%;width:100%">
+        <p style="margin-top: 0px">Cache Date: {{cacheDate}}</p>
         <!--    预测栏    -->
         <el-form :inline="true" class="demo-form-inline" :model="predictForm" :rules="predictFormRules"
                  ref="predictFormRules">
@@ -148,6 +149,7 @@ export default {
       },
       //从后端获取选择项的列表
       aircraftList: [],
+      cacheDate:'',
       typeList: [],
       //左发与右发中FTSI的表格数据
       leftIPS: '',
@@ -181,6 +183,7 @@ export default {
       this.rightForm = res.data.ftsiForRight
       this.amountLeft = res.data.amountLeft
       this.amountRight = res.data.amountRight
+      this.cacheDate=res.data.cacheDate
     },
     changeTrStyle({row, column, rowIndex, columnIndex}) {
       if (row.reminds === 'attention' && column.label === 'Comments') {
