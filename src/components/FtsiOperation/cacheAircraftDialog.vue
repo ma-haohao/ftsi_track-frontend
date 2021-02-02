@@ -5,7 +5,7 @@
       width="700px">
     <!--  main content  -->
     <span>
-        <el-transfer :titles="['Unapplied','Applied']" v-model="cachedAircraft.aircraftNum" :data="IPSdata"></el-transfer>
+        <el-transfer :titles="['Uncached','Cached']" v-model="cachedAircraft.aircraftNum" :data="IPSdata"></el-transfer>
     </span>
     <!--  foot area  -->
     <span slot="footer" class="dialog-footer">

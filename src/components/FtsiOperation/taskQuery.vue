@@ -8,18 +8,12 @@
     </el-breadcrumb>
     <!--  选择栏  -->
     <div class="select_bar">
-      <el-row :gutter="0">
-        <el-col :span="9">
-          <el-radio-group v-model="queryForm.aircraftMSN" @change="getFTSIforAifcraft" size="small">
-            <el-radio-button v-for="item in aircraftList" :label="item"></el-radio-button>
-          </el-radio-group>
-        </el-col>
-        <el-col :span="8">
-          <el-radio-group v-model="queryForm.typeSelect" @change="getFTSIforAifcraft" size="small">
-            <el-radio-button v-for="item in typeList" :label="item"></el-radio-button>
-          </el-radio-group>
-        </el-col>
-      </el-row>
+      <el-radio-group style="margin-right: 30px" v-model="queryForm.aircraftMSN" @change="getFTSIforAifcraft" size="small">
+        <el-radio-button v-for="item in aircraftList" :label="item"></el-radio-button>
+      </el-radio-group>
+      <el-radio-group v-model="queryForm.typeSelect" @change="getFTSIforAifcraft" size="small">
+        <el-radio-button v-for="item in typeList" :label="item"></el-radio-button>
+      </el-radio-group>
     </div>
     <!--  表单栏，左右发动机的数据  -->
     <div class="ftsi_list">

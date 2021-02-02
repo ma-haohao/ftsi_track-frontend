@@ -7,7 +7,7 @@ import FtsiList from '../components/FtsiMgr/FtsiList.vue'
 import TaskQuery from '../components/FtsiOperation/taskQuery.vue'
 import TaskSubmit from '../components/FtsiOperation/taskSubmit.vue'
 import CacheArea from '../components/FtsiOperation/cacheArea.vue'
-
+import CacheSubmit from '../components/FtsiOperation/cacheSubmit.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -19,8 +19,9 @@ const router = new Router({
         {path:'/welcome',component:Welcome},
         {path:'/ftsilist',component: FtsiList},
         {path:'/taskquery',component: TaskQuery},
-        {path:'/cacheArea',component: CacheArea},
         {path:'/tasksubmit',component: TaskSubmit},
+        {path:'/cachearea',component: CacheArea},
+        {path:'/cachesubmit',component: CacheSubmit},
       ]}
   ]
 })

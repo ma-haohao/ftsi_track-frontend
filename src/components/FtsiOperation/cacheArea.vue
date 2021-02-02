@@ -8,25 +8,22 @@
     </el-breadcrumb>
     <!--  选择栏  -->
     <div class="select_bar">
-      <el-button type="primary" size="small" style="margin-bottom: 15px" @click="openCacheDialog">Cached Aircraft</el-button>
-      <el-row :gutter="0">
-        <el-col :span="9">
-          <el-radio-group v-model="queryForm.aircraftMSN" @change="getFTSIforAifcraft" size="small">
-            <el-radio-button v-for="item in aircraftList" :label="item"></el-radio-button>
-          </el-radio-group>
-        </el-col>
-        <el-col :span="8">
-          <el-radio-group v-model="queryForm.typeSelect" @change="getFTSIforAifcraft" size="small">
-            <el-radio-button v-for="item in typeList" :label="item"></el-radio-button>
-          </el-radio-group>
-        </el-col>
-      </el-row>
+      <el-button type="primary" size="small" style="margin-bottom: 15px" @click="openCacheDialog">Cached Aircraft
+      </el-button>
+      <br>
+      <el-radio-group style="margin-right: 30px" v-model="queryForm.aircraftMSN" @change="getFTSIforAifcraft" size="small">
+        <el-radio-button v-for="item in aircraftList" :label="item"></el-radio-button>
+      </el-radio-group>
+      <el-radio-group v-model="queryForm.typeSelect" @change="getFTSIforAifcraft" size="small">
+        <el-radio-button v-for="item in typeList" :label="item"></el-radio-button>
+      </el-radio-group>
     </div>
     <!--  表单栏，左右发动机的数据  -->
     <div class="ftsi_list">
       <el-card style="height:100%;width:100%">
         <!--    预测栏    -->
-        <el-form :inline="true" class="demo-form-inline" :model="predictForm" :rules="predictFormRules" ref="predictFormRules">
+        <el-form :inline="true" class="demo-form-inline" :model="predictForm" :rules="predictFormRules"
+                 ref="predictFormRules">
           <el-form-item label="Flight day" prop="flightDay">
             <el-input v-model="predictForm.flightDay"></el-input>
           </el-form-item>
@@ -58,7 +55,7 @@
         <!--   发动机数据   -->
         <el-tabs type="card" v-model="activeName" @tab-click="handleClick">
           <el-tab-pane :label="'LHE: '+leftIPS" name="first">
-            <span>Total: {{amountLeft}}</span>
+            <span>Total: {{ amountLeft }}</span>
             <el-table :data="leftForm" border stripe
                       :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}" style="font-size: 13px"
                       :cell-style="changeTrStyle">
@@ -70,19 +67,10 @@
               <el-table-column label="Last implement" prop="last_date"></el-table-column>
               <el-table-column label="Compliance Statement" prop="ftsi_info.statement" width="500"></el-table-column>
               <el-table-column label="Comments" prop="comments"></el-table-column>
-              <el-table-column label="Opt." width="70" align="center">
-                <template slot-scope="scope">
-                  <!--     文件编辑按钮       -->
-                  <el-tooltip effect="dark" content="Edit" placement="top" :enterable="false">
-                    <el-button type="warning" icon="el-icon-edit" size="mini"
-                               @click="openEditDetailDialog(scope.row.id)"></el-button>
-                  </el-tooltip>
-                </template>
-              </el-table-column>
             </el-table>
           </el-tab-pane>
           <el-tab-pane :label="'RHE: '+rightIPS" name="second">
-            <span>Total: {{amountRight}}</span>
+            <span>Total: {{ amountRight }}</span>
             <el-table :data="rightForm" border stripe
                       :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}" style="font-size: 13px"
                       :cell-style="changeTrStyle">
@@ -94,15 +82,6 @@
               <el-table-column label="Last implement" prop="last_date"></el-table-column>
               <el-table-column label="Compliance Statement" prop="ftsi_info.statement" width="500"></el-table-column>
               <el-table-column label="Comments" prop="comments"></el-table-column>
-              <el-table-column label="Opt." width="70" align="center">
-                <template slot-scope="scope">
-                  <!--     文件编辑按钮       -->
-                  <el-tooltip effect="dark" content="Edit" placement="top" :enterable="false">
-                    <el-button type="warning" icon="el-icon-edit" size="mini"
-                               @click="openEditDetailDialog(scope.row.id)"></el-button>
-                  </el-tooltip>
-                </template>
-              </el-table-column>
             </el-table>
           </el-tab-pane>
         </el-tabs>
@@ -111,7 +90,6 @@
     <editDetail ref="editDetailRef" v-on:updateList="getFTSIforAifcraft"></editDetail>
     <predict-result ref="predictResultRef"></predict-result>
     <cacheAircraftDialog ref="cacheAircraftDialogRef"></cacheAircraftDialog>
-
   </div>
 </template>
 
@@ -143,39 +121,39 @@ export default {
         aircraftMSN: '',
         typeSelect: 'All',
       },
-      predictForm:{
-        flightDay:1,
-        flightHour:5,
-        engineHour:5,
-        c1Cycle:1,
-        aircraftMSN:''
+      predictForm: {
+        flightDay: 1,
+        flightHour: 5,
+        engineHour: 5,
+        c1Cycle: 1,
+        aircraftMSN: ''
       },
-      predictFormRules:{
+      predictFormRules: {
         flightDay: [
-        {required: true, message: 'please enter the FTSI number', trigger: 'blur'},
+          {required: true, message: 'please enter the FTSI number', trigger: 'blur'},
           {validator: onlyNum, trigger: 'blur'}
-      ],
+        ],
         flightHour: [
-        {required: true, message: 'please enter the Revision', trigger: 'blur'},
-            {validator: onlyNum, trigger: 'blur'}
-      ],
+          {required: true, message: 'please enter the Revision', trigger: 'blur'},
+          {validator: onlyNum, trigger: 'blur'}
+        ],
         engineHour: [
-        {required: true, message: 'please choose the monitor type', trigger: 'change'},
-            {validator: onlyNum, trigger: 'blur'}
-      ],
+          {required: true, message: 'please choose the monitor type', trigger: 'change'},
+          {validator: onlyNum, trigger: 'blur'}
+        ],
         c1Cycle: [
-        {required: true, message: 'At least one IPS must be chosen', trigger: 'change'},
-            {validator: onlyNum, trigger: 'blur'}
-      ]
-    },
+          {required: true, message: 'At least one IPS must be chosen', trigger: 'change'},
+          {validator: onlyNum, trigger: 'blur'}
+        ]
+      },
       //从后端获取选择项的列表
       aircraftList: [],
       typeList: [],
       //左发与右发中FTSI的表格数据
       leftIPS: '',
       rightIPS: '',
-      amountLeft:'',
-      amountRight:'',
+      amountLeft: '',
+      amountRight: '',
       leftForm: [],
       rightForm: [],
     }
@@ -192,7 +170,7 @@ export default {
     },
     async getFTSIforAifcraft() {
       if (this.aircraftMSN === '') return this.$message.error('Please select the aircraft first.')
-      const {data: res} = await this.$http.get('ftsiOpt/ftsiforAircraft/', {params: this.queryForm})
+      const {data: res} = await this.$http.get('userOpt/cachedFTSIforAircraft/', {params: this.queryForm})
       console.log(res)
       if (res.meta.status !== 200) {
         return this.$message.error(res.meta.msg)
@@ -201,8 +179,8 @@ export default {
       this.rightIPS = res.data.rightIPS.engine
       this.leftForm = res.data.ftsiForLeft
       this.rightForm = res.data.ftsiForRight
-      this.amountLeft=res.data.amountLeft
-      this.amountRight=res.data.amountRight
+      this.amountLeft = res.data.amountLeft
+      this.amountRight = res.data.amountRight
     },
     changeTrStyle({row, column, rowIndex, columnIndex}) {
       if (row.reminds === 'attention' && column.label === 'Comments') {
@@ -211,19 +189,16 @@ export default {
         return 'background:#FFD102'
       }
     },
-    openEditDetailDialog(id) {
-      this.$refs.editDetailRef.init(id)
-    },
     openCacheDialog() {
       this.$refs.cacheAircraftDialogRef.init()
     },
     //发起预测请求
-    predictAction(){
+    predictAction() {
       this.$refs.predictFormRules.validate(async valid => {
         if (!valid) return
         //可以发起添加请求
-        this.predictForm.aircraftMSN=this.queryForm.aircraftMSN
-        const {data: res} = await this.$http.get('ftsiOpt/predictFTSI/',{params:this.predictForm})
+        this.predictForm.aircraftMSN = this.queryForm.aircraftMSN
+        const {data: res} = await this.$http.get('userOpt/cachedPredictFTSI/', {params: this.predictForm})
         if (res.meta.status !== 200) {
           return this.$message.error(res.meta.msg)
         }
@@ -251,8 +226,8 @@ export default {
   width: 150px;
 }
 
-.select_input{
-  width:40%;
+.select_input {
+  width: 40%;
   margin-bottom: 15px;
 }
 </style>
