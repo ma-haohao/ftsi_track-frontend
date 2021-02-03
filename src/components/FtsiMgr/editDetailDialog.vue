@@ -93,7 +93,6 @@ export default {
       showType1:'',
       showType2:'',
       showCustomizeType:'',
-      dateStorage:''
     }
   },
   methods: {
@@ -123,7 +122,7 @@ export default {
       return false
     },
     typeJudge(){
-      const arr=['On condition','Up to date','trigger_factor']
+      const arr=['OTHER','DATE','trigger_factor']
       const arr2=['dep_type1','dep_type2','dep_type3']
       var current_type=''
       this.showCustomizeType =this.isInArray(['Customize'], this.editDetailForm.dep_type);
@@ -131,20 +130,21 @@ export default {
         current_type=this.editDetailForm.customize[this.editDetailForm.current_type]['type_label']
       }else{current_type=this.editDetailForm.current_type}
       this.showType1 = !this.isInArray(arr, current_type);
-      this.showType2 =this.isInArray(['Up to date'],current_type);
+      this.showType2 =this.isInArray(['DATE'],current_type);
+      if(this.isInArray(['DATE'],current_type)){this.editDetailForm.dateStorage=this.editDetailForm.next_target}
     },
     customizeTypeJudge(){
       this.typeJudge()
       if(this.editDetailForm.current_type!=='trigger_factor'){
         var current_type=this.editDetailForm.customize[this.editDetailForm.current_type]
-        if(current_type!=='Up to date'){
+        this.editDetailForm.residual_times=current_type['total_times']
+        this.editDetailForm.DB_keyword=current_type['DB_keyword']
+        this.editDetailForm.unit=current_type['unit']
+        if(!this.isInArray(['DATE','OTHER'],current_type['type_label'])){
           this.editDetailForm.next_target=(this.editDetailForm.engine_info[current_type['DB_keyword']]+parseInt(current_type['period']))+''
         }else{
           this.editDetailForm.next_target=''
         }
-        this.editDetailForm.residual_times=current_type['total_times']
-        this.editDetailForm.DB_keyword=current_type['DB_keyword']
-        this.editDetailForm.unit=current_type['unit']
         this.calLeftTime()
       }
     },
@@ -158,9 +158,10 @@ export default {
     },
     dateTransfer(){
       this.editDetailForm.next_target=this.editDetailForm.dateStorage
-      //console.log(this.editDetailForm.next_target)
+      console.log(this.editDetailForm.next_target)
     },
     async editDetailInfo(){
+
       const {data:res}=await this.$http.put('ftsiMgr/detailFTSI/infoChange/',this.editDetailForm)
       if(res.meta.status!==200){
         return this.$message.error(res.meta.msg)
