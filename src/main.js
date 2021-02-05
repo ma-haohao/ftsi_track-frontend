@@ -20,6 +20,7 @@ Vue.config.productionTip = false
 
 /*loading 全局加载*/
 import {Loading} from 'element-ui'
+import { Message } from 'element-ui';
 let loading;
 //内存中正在请求的数量
 let loadingNum=0;
@@ -55,9 +56,18 @@ axios.interceptors.response.use(response => {
   return response
 }, err => {
   endLoading();
+  if (err && err.response) {
+    switch (err.response.status) {
+      case 404: Message.error('The current user has no permission.'); break;
+      case 403: router.push('/login'); Message.error('Signature has expired.');break;
+      case 500: Message.error('Internal server error(500)'); break;
+      default: err.message = `connection error(${err.response.status})!`;
+    }
+  } else {
+    err.message = 'connection of server failed!'
+  }
   return Promise.reject(err);
 });
-
 
 new Vue({
   router,

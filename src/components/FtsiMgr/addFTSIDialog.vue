@@ -211,7 +211,6 @@ export default {
   },
   methods: {
     init() {
-      this.dialogVisible = true;
       this.getTypeFTSI()
     },
     onlyNum(rule, value, callback) {
@@ -245,6 +244,7 @@ export default {
       if (res.meta.status !== 200) this.$message.error('failed to get the type list')
       this.monitorType = res.data.monitorType
       this.triggerType = res.data.triggerType
+      this.dialogVisible = true;
     },
     monitorTypeCheck() {
       if (this.addForm.dep_type === 'CUS') {

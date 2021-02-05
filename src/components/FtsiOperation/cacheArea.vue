@@ -41,18 +41,6 @@
             <el-button type="primary" @click="predictAction">Predict</el-button>
           </el-form-item>
         </el-form>
-        <!--  搜索栏    -->
-        <div class="select_input">
-          <el-input placeholder="Please enter what you are searching for" v-model="queryForm.input"
-                    class="input-with-select" @keyup.enter.native="getFTSIforAifcraft" clearable>
-            <el-select v-model="queryForm.select" slot="prepend" placeholder="According to">
-              <el-option label="FTSI Num." value="ftsi_num"></el-option>
-              <el-option label="FTSI Title" value="ftsi_title"></el-option>
-              <el-option label="Compliance State." value="statement"></el-option>
-            </el-select>
-            <el-button slot="append" icon="el-icon-search" @click="getFTSIforAifcraft"></el-button>
-          </el-input>
-        </div>
         <!--   发动机数据   -->
         <el-tabs type="card" v-model="activeName" @tab-click="handleClick">
           <el-tab-pane :label="'LHE: '+leftIPS" name="first">
@@ -117,8 +105,6 @@ export default {
       //记录选择项的值，用于传回后端来进行查询
       activeName: 'first',
       queryForm: {
-        select: '',
-        input: '',
         aircraftMSN: '',
         typeSelect: 'All',
       },

@@ -215,7 +215,6 @@ export default {
   },
   methods: {
     init(id) {
-      this.dialogVisible = true;
       console.log(id)
       this.getTypeFTSI()
       this.getFTSIInfo(id)
@@ -265,6 +264,7 @@ export default {
       if (res.meta.status !== 200) this.$message.error('failed to get the type list')
       this.monitorType = res.data.monitorType
       this.triggerType = res.data.triggerType
+      this.dialogVisible = true;
     },
     monitorTypeCheck() {
       if (this.editForm.dep_type === 'CUS') {
