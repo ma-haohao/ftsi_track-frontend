@@ -59,7 +59,7 @@ axios.interceptors.response.use(response => {
   if (err && err.response) {
     switch (err.response.status) {
       case 404: Message.error('The current user has no permission.'); break;
-      case 403: router.push('/login'); Message.error('Signature has expired.');break;
+      case 401: router.push('/login'); Message.error('Signature has expired.');break;
       case 500: Message.error('Internal server error(500)'); break;
       default: err.message = `connection error(${err.response.status})!`;
     }
