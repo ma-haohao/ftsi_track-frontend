@@ -60,7 +60,7 @@ export default {
         '301': 'iconfont icon-bg-history',
         '401': 'iconfont icon-user-fill'
       },
-      isCollapse: true,
+      isCollapse: false,
       activePath:''
     }
   },
