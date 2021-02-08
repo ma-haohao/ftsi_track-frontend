@@ -8,6 +8,7 @@ import TaskQuery from '../components/FtsiOperation/taskQuery.vue'
 import TaskSubmit from '../components/FtsiOperation/taskSubmit.vue'
 import CacheArea from '../components/FtsiOperation/cacheArea.vue'
 import CacheSubmit from '../components/FtsiOperation/cacheSubmit.vue'
+import SubmitRecord from '../components/History/submitRecord.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -22,6 +23,7 @@ const router = new Router({
         {path:'/tasksubmit',component: TaskSubmit},
         {path:'/cachearea',component: CacheArea},
         {path:'/cachesubmit',component: CacheSubmit},
+        {path:'/submitrecord',component: SubmitRecord}
       ]}
   ]
 })
