@@ -10,14 +10,14 @@
     <el-card style="height:100%;width:100%">
       <!--   search and add area   -->
       <el-input placeholder="Please enter what you are searching for" v-model="queryInfo.input"
-                class="input-with-select" @keyup.enter.native="getFTSIList" style="width: 700px">
+                class="input-with-select" @keyup.enter.native="getHistoryList" style="width: 700px">
         <el-select v-model="queryInfo.select" slot="prepend" placeholder="According to">
           <el-option label="Implement Date" value="date"></el-option>
           <el-option label="A/C MSN" value="aircraft"></el-option>
           <el-option label="Engine" value="engine"></el-option>
           <el-option label="FTSI info." value="ftsi_info"></el-option>
         </el-select>
-        <el-button slot="append" icon="el-icon-search" @click="getFTSIList"></el-button>
+        <el-button slot="append" icon="el-icon-search" @click="getHistoryList"></el-button>
       </el-input>
 
       <!--   ftsi info table area   -->
