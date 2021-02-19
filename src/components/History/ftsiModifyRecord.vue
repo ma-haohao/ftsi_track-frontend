@@ -4,7 +4,7 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">Home</el-breadcrumb-item>
       <el-breadcrumb-item>History</el-breadcrumb-item>
-      <el-breadcrumb-item>Submit Record</el-breadcrumb-item>
+      <el-breadcrumb-item>FTSI Record</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 卡片视图区 -->
     <el-card style="height:100%;width:100%">
@@ -12,23 +12,35 @@
       <el-input placeholder="Please enter what you are searching for" v-model="queryInfo.input"
                 class="input-with-select" @keyup.enter.native="getHistoryList" style="width: 700px">
         <el-select v-model="queryInfo.select" slot="prepend" placeholder="According to">
-          <el-option label="Implement Date" value="date"></el-option>
-          <el-option label="A/C MSN" value="aircraft"></el-option>
-          <el-option label="Engine" value="engine"></el-option>
-          <el-option label="FTSI info." value="ftsi_info"></el-option>
+          <el-option label="Modified Date" value="date"></el-option>
+          <el-option label="Modify Type" value="modify_type"></el-option>
+          <el-option label="FTSI num." value="ftsi_num"></el-option>
+          <el-option label="FTSI title" value="ftsi_title"></el-option>
+          <el-option label="Compli. statement" value="statement"></el-option>
         </el-select>
         <el-button slot="append" icon="el-icon-search" @click="getHistoryList"></el-button>
       </el-input>
 
       <!--   ftsi info table area   -->
-      <el-table :data="submitList" border stripe :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}">
+      <el-table :data="FTSIList" border stripe :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}">
         <el-table-column type="index"></el-table-column>
         <el-table-column label="Date" prop="date" width="150"></el-table-column>
-        <el-table-column label="A/C MSN" prop="aircraft" width="120"></el-table-column>
-        <el-table-column label="Engine" prop="engine" width="100"></el-table-column>
-        <el-table-column label="FTSI info." prop="ftsi_info"></el-table-column>
-        <el-table-column label="Implement info." prop="implement_info" width="200"></el-table-column>
-        <el-table-column label="Next step" prop="next_step" width="200"></el-table-column>
+        <el-table-column label="Type" prop="modify_type" width="120"></el-table-column>
+        <el-table-column label="FTSI Num." prop="ftsi_num" width="100"></el-table-column>
+        <el-table-column label="Rev." prop="rev"></el-table-column>
+        <el-table-column label="FTSI Title" prop="ftsi_title" width="200"></el-table-column>
+        <el-table-column label="Effectivity Changed?" prop="effect_change" width="100">
+          <template scope="scope">
+            <span v-if="scope.row.effect_change===true">Yes</span>
+            <span v-if="scope.row.effect_change===false">No</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Compliance Changed?" prop="monitor_change" width="120">
+          <template scope="scope">
+            <span v-if="scope.row.monitor_change===true">Yes</span>
+            <span v-if="scope.row.monitor_change===false">No</span>
+          </template>
+        </el-table-column>
       </el-table>
       <!--  分页区域    -->
       <el-pagination
@@ -56,7 +68,7 @@ export default {
         pagenum: 1,
         pagesize: 10
       },
-      submitList: [],
+      FTSIList: [],
       total: 0,
     }
   },
@@ -65,12 +77,12 @@ export default {
   },
   methods: {
     async getHistoryList() {
-      const {data: res} = await this.$http.get('historyRecord/submitHistory/', {params: this.queryInfo})
+      const {data: res} = await this.$http.get('historyRecord/ftsiHistory/', {params: this.queryInfo})
       console.log(res)
       if (res.meta.status !== 200) {
-        return this.$message.error('failed to get the history submit list')
+        return this.$message.error('failed to get the history FTSI list')
       }
-      this.submitList = res.data.response_info
+      this.FTSIList = res.data.response_info
       this.total = res.data.totalitems
     },
     /*监听pagesize改变的事件*/
