@@ -27,8 +27,8 @@
         <el-table-column label="Date" prop="date" width="150"></el-table-column>
         <el-table-column label="Type" prop="modify_type" width="120"></el-table-column>
         <el-table-column label="FTSI Num." prop="ftsi_num" width="100"></el-table-column>
-        <el-table-column label="Rev." prop="rev"></el-table-column>
-        <el-table-column label="FTSI Title" prop="ftsi_title" width="200"></el-table-column>
+        <el-table-column label="Rev." prop="rev" width="80"></el-table-column>
+        <el-table-column label="FTSI Title" prop="ftsi_title"></el-table-column>
         <el-table-column label="Effectivity Changed?" prop="effect_change" width="100">
           <template scope="scope">
             <span v-if="scope.row.effect_change===true">Yes</span>

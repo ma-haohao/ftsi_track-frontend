@@ -26,16 +26,16 @@
         <el-form :inline="true" class="demo-form-inline" :model="predictForm" :rules="predictFormRules"
                  ref="predictFormRules">
           <el-form-item label="Flight day" prop="flightDay">
-            <el-input v-model="predictForm.flightDay"></el-input>
+            <el-input v-model="predictForm.flightDay" class="predictInputForm"></el-input>
           </el-form-item>
           <el-form-item label="Flight hour" prop="flightHour">
-            <el-input v-model="predictForm.flightHour"></el-input>
+            <el-input v-model="predictForm.flightHour" class="predictInputForm"></el-input>
           </el-form-item>
           <el-form-item label="Engine hour" prop="engineHour">
-            <el-input v-model="predictForm.engineHour"></el-input>
+            <el-input v-model="predictForm.engineHour" class="predictInputForm"></el-input>
           </el-form-item>
           <el-form-item label="C1 cycle" prop="c1Cycle">
-            <el-input v-model="predictForm.c1Cycle"></el-input>
+            <el-input v-model="predictForm.c1Cycle" class="predictInputForm"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="predictAction">Predict</el-button>

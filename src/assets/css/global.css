@@ -28,3 +28,7 @@ html,body,#app{
 .longInputForm {
     width: 580px;
 }
+
+.predictInputForm{
+    width: 150px;
+}
