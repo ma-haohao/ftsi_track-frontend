@@ -94,7 +94,7 @@ export default {
     }
   },
   methods: {
-    async init(original_info,aircraftMSN) {
+    init(original_info,aircraftMSN) {
       this.orginalForm=original_info
       this.aircraftForm.aircraftMSN=aircraftMSN
       this.calTotalValue()
