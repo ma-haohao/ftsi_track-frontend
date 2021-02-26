@@ -9,10 +9,10 @@
       <el-form ref="engineFormRef" :inline="true" label-width="150px" :model="engineForm" @close="engineEditClose">
         <el-form-item label="Aircraft Num." prop="aircraft"
                       :rules="[{required: true, message: 'cannot be blank', trigger: 'blur'}]">
-          <el-input class="shortInputForm" v-model="engineForm.aircraft"></el-input>
+          <el-input class="shortInputForm" v-model="engineForm.aircraft" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="Left/Right" prop="left_right">
-          <el-input class="shortInputForm" v-model="engineForm.left_right"></el-input>
+          <el-input class="shortInputForm" v-model="engineForm.left_right" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="Flight Day" prop="flight_day"
                       :rules="[{required: true, message: 'cannot be blank', trigger: 'blur'},
@@ -45,17 +45,20 @@
                               {validator:onlyNum}]">
           <el-input class="shortInputForm" v-model="engineForm.engine_starts"></el-input>
         </el-form-item>
-                <el-form-item label="Reverse Cycle" prop="reverse_cycle"
+        <el-form-item label="Reverse Cycle" prop="reverse_cycle"
                               :rules="[{required: true, message: 'cannot be blank', trigger: 'blur'},
                               {validator:onlyNum}]">
           <el-input class="shortInputForm" v-model="engineForm.reverse_cycle"></el-input>
+        </el-form-item>
+        <el-form-item label="Change FTSI Info?" prop="reverse_cycle">
+          <el-switch v-model="FTSIchangeFlag"></el-switch>
         </el-form-item>
       </el-form>
     </span>
     <!--  foot area  -->
     <span slot="footer" class="dialog-footer">
     <el-button @click="engineEditClose">close</el-button>
-    <el-button type="primary">submit</el-button>
+    <el-button type="primary" @click="submitEngineInfoEdit">submit</el-button>
   </span>
   </el-dialog>
 </template>
@@ -66,7 +69,7 @@ export default {
   data() {
     return {
       engineForm:{},
-      orginalForm:{},
+      FTSIchangeFlag:false,
       dialogVisible: false,
     }
   },
@@ -85,6 +88,14 @@ export default {
       } else {
         callback()
       }
+    },
+    async submitEngineInfoEdit(){
+      this.engineForm.FTSIchangeFlag=this.FTSIchangeFlag
+      const {data:res}=await this.$http.put('common/submitEngineEditInfo/',this.engineForm)
+      console.log(res)
+      if(res.meta.status===200){this.$message.success(res.meta.msg)}
+      this.engineEditClose()
+      this.$parent.getEngineInfoList()
     },
     engineEditClose(){
       this.$refs.engineFormRef.resetFields()
