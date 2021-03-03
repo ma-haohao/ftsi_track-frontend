@@ -173,6 +173,7 @@ export default {
       IPSdata: generateIPSData(),
       dialogVisible: false,
       activeDisabled: false,
+      pendingFlag:false,
       monitorType: [], /*监控的类型*/
       triggerType: [], /*FTSI的激活类型*/
       /*控制部分表单元素的可视与否*/
@@ -181,7 +182,6 @@ export default {
       showTriggerDate: false,
       revOriginal:'',
       updateForm: {
-
         customizePara: {
           triggerDateForm:'',
           trigger: {
@@ -217,11 +217,25 @@ export default {
     }
   },
   methods: {
+    applied_ips_compare(old_list,new_list){
+      if(old_list.sort().toString()!==new_list.sort().toString()){
+        this.modifyRange=true
+      }
+    },
     init(id) {
-
-      console.log(id)
       this.getTypeFTSI()
       this.getFTSIInfo(id)
+    },
+    async initForPending(item){
+      this.getTypeFTSI()
+      const old_ips=await this.getFTSIInfo(item.id)
+      this.updateForm.pending_id=item.pending_id
+      this.updateForm.rev=item.revision
+      this.updateForm.ftsi_title=item.ftsi_title
+      this.updateForm.statement=item.statement
+      this.applied_ips_compare(old_ips,item.impact_ips)
+      this.updateForm.appliedIPS=item.impact_ips
+      this.pendingFlag=true
     },
     validateRevUpdate(rule,value,callback){
       if(value<=this.revOriginal){
@@ -233,11 +247,12 @@ export default {
     async getFTSIInfo(id){
       const {data:res}=await this.$http.get('ftsiMgr/getFTSIInfo/',{params: {'id': id}})
       this.updateForm=res.data
+      console.log(this.updateForm)
       this.revOriginal=this.updateForm.rev
       this.monitorTypeCheck()
       this.paraShowControl()
       if(this.showTriggerDate===true){this.updateForm.triggerDateForm=this.updateForm.customizePara.trigger.parameter}
-      console.log(this.updateForm)
+      return res.data.appliedIPS
     },
     onlyNum(rule, value, callback) {
       const regNum = /^[0-9_-]*$/
@@ -255,13 +270,16 @@ export default {
         this.updateForm.modifyRange = this.modifyRange;
         if(this.showTriggerDate===true){this.updateForm.customizePara.trigger.parameter=this.updateForm.triggerDateForm}
         const {data: res} = await this.$http.put('ftsiMgr/updateFTSI/', this.updateForm)
-        console.log(res)
         if (res.meta.status !== 200) {
           this.$message.error(res.meta.msg)
         }
-        this.$message.success(res.meta.msg)
+        if(this.pendingFlag===true){
+          const {data: res} = await this.$http.put('ftsiMgr/PendingClose/', this.updateForm)
+          if (res.meta.status !== 200) {this.$message.error(res.meta.msg)}
+          this.$message.success(res.meta.msg)
+        }
         this.dialogVisible = false
-        this.$parent.getFTSIList()
+        this.$emit('updateList')
       })
     },
     //监听添加对话框的关闭事件

@@ -20,18 +20,18 @@
           <template scope="scope">
             <div v-if="scope.row.action_type==='add'">
               <el-button type="primary" size="mini"
-                           @click="opendDetailDialog(scope.row.id)">ADD</el-button>
+                           @click="openAddDialog(scope.row)">ADD</el-button>
             </div>
             <div v-if="scope.row.action_type==='update'">
               <el-button type="success" size="mini"
-                           @click="opendDetailDialog(scope.row.id)">UPDATE</el-button>
+                           @click="opendUpdateDialog(scope.row)">UPDATE</el-button>
             </div>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
-    <addFTSI ref="addFTSIRef"></addFTSI>
-    <updateFTSI ref="updateFTSIRef"></updateFTSI>
+    <addFTSI ref="addFTSIRef" v-on:updateList="getPendingList()"></addFTSI>
+    <updateFTSI ref="updateFTSIRef" v-on:updateList="getPendingList()"></updateFTSI>
   </div>
 
 </template>
@@ -62,11 +62,11 @@ export default {
       this.pendingList = res.data.pending_info
     },
     /*激活不同功能的弹窗*/
-    openAddDialog() {
-      this.$refs.addFTSIRef.init()
+    openAddDialog(item) {
+      this.$refs.addFTSIRef.initForPending(item)
     },
     opendUpdateDialog(id) {
-      this.$refs.updateFTSIRef.init(id)
+      this.$refs.updateFTSIRef.initForPending(id)
     },
   }
 }

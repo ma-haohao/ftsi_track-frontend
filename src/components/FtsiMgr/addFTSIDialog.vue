@@ -8,19 +8,19 @@
       <el-form ref="addFormRef" label-width="150px" :model="addForm" :rules="addFormRules">
         <!--   FTSI号区域     -->
         <el-form-item label="FTSI Number" prop="ftsi_num" class="required">
-          <el-input class="shortInputForm" v-model="addForm.ftsi_num"></el-input>
+          <el-input class="shortInputForm" v-model="addForm.ftsi_num" :disabled=pendingFlag></el-input>
         </el-form-item>
         <!--   版本号区域     -->
         <el-form-item label="Rev." prop="rev" class="required">
-          <el-input class="shortInputForm" v-model="addForm.rev"></el-input>
+          <el-input class="shortInputForm" v-model="addForm.rev" :disabled=pendingFlag></el-input>
         </el-form-item>
         <!--   FTSI title区域     -->
         <el-form-item label="FTSI Title" prop="ftsi_title">
-          <el-input type="textarea" class="longInputForm" v-model="addForm.ftsi_title"></el-input>
+          <el-input type="textarea" class="longInputForm" v-model="addForm.ftsi_title" :disabled=pendingFlag></el-input>
         </el-form-item>
         <!--   Compliance Statement区域     -->
         <el-form-item label="Compliance Stat." prop="statement">
-          <el-input type="textarea" class="longInputForm" v-model="addForm.statement"></el-input>
+          <el-input type="textarea" class="longInputForm" v-model="addForm.statement" :disabled=pendingFlag></el-input>
         </el-form-item>
         <!--   监控类型区域     -->
         <el-form-item label="Monitor Type" prop="dep_type" class="required">
@@ -162,6 +162,7 @@ export default {
       IPSdata: generateIPSData(),
       dialogVisible: false,
       activeDisabled: false,
+      pendingFlag:false,/*请求是否来自pendingList页面*/
       monitorType: [], /*监控的类型*/
       triggerType: [], /*FTSI的激活类型*/
       /*控制部分表单元素的可视与否*/
@@ -212,6 +213,16 @@ export default {
   methods: {
     init() {
       this.getTypeFTSI()
+    },
+    initForPending(item){
+      this.addForm.pending_id=item.id
+      this.addForm.ftsi_num=item.ftsi_no
+      this.addForm.rev=item.revision
+      this.addForm.ftsi_title=item.ftsi_title
+      this.addForm.statement=item.statement
+      this.addForm.appliedIPS=item.impact_ips
+      this.getTypeFTSI()
+      this.pendingFlag=true
     },
     onlyNum(rule, value, callback) {
       const regNum = /^[0-9_-]*$/
@@ -278,13 +289,14 @@ export default {
         if(this.showTriggerDate===true){this.addForm.customizePara.trigger.parameter=this.addForm.triggerDateForm}
         //可以发起添加请求
         const {data: res} = await this.$http.post('ftsiMgr/addFTSI/', this.addForm)
-        console.log(res)
-        if (res.meta.status !== 201) {
-          this.$message.error(res.meta.msg)
+        if (res.meta.status !== 201) {return this.$message.error(res.meta.msg)}
+        if(this.pendingFlag===true){
+          const {data: res} = await this.$http.put('ftsiMgr/PendingClose/', this.addForm)
+          if (res.meta.status !== 200) {this.$message.error(res.meta.msg)}
+          this.$message.success(res.meta.msg)
         }
-        this.$message.success(res.meta.msg)
         this.dialogVisible = false
-        this.$parent.getFTSIList()
+        this.$emit('updateList')
       })
     },
     //控制trigger的输入参数的显示

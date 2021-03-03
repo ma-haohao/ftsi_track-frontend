@@ -62,10 +62,10 @@
           :total="total">
       </el-pagination>
     </el-card>
-    <addFTSI ref="addFTSIRef"></addFTSI>
+    <addFTSI ref="addFTSIRef" v-on:updateList="getFTSIList()"></addFTSI>
     <detailFTSI ref="detailFTSIRef"></detailFTSI>
     <editFTSI ref="editFTSIRef"></editFTSI>
-    <updateFTSI ref="updateFTSIRef"></updateFTSI>
+    <updateFTSI ref="updateFTSIRef" v-on:updateList="getFTSIList()"></updateFTSI>
   </div>
 
 </template>
