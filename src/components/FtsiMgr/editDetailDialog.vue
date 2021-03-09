@@ -84,6 +84,7 @@ export default {
     return {
       dialogVisible: false,
       editDetailForm: {
+        issueDate:"",
         engine_info: {},
         customize: {},
         dateStorage:''

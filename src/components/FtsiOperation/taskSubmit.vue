@@ -152,6 +152,7 @@ export default {
         if (!valid) return
         //可以发起添加请求
         const {data: res} = await this.$http.get('ftsiOpt/checkFTSIinfo/', {params: engineForm})
+        if(res.meta.status!==200){return this.$message.error(res.meta.msg)}
         console.log(res)
         if (engineForm.engineNum === this.leftEngineForm.engineNum) {
           this.leftCheckResult = res.data.FTSI_info
@@ -171,7 +172,7 @@ export default {
         //可以发起添加请求
         const {data: res} = await this.$http.put('ftsiOpt/submitFTSIinfo/', engineForm)
         if (res.meta.status !== 200) {
-          return this.$message.error('failed to submit the info')
+          return this.$message.error(this.$message.error(res.meta.msg))
         }
         this.$message.success(res.meta.msg)
         if (res.data.warning_info !== "") {

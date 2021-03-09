@@ -15,10 +15,10 @@
           <el-input class="shortInputForm" v-model="addForm.rev" :disabled=pendingFlag></el-input>
         </el-form-item>
         <!--   起效时间     -->
-        <el-form-item label="=Issue Date" prop="issueDate" class="required"
+        <el-form-item label="Issue Date" prop="issueDate" class="required"
                       :rules="[{required: true, message: 'please choose the start date', trigger: 'blur'}]">
           <el-date-picker v-model="addForm.issueDate" type="date"
-                                  placeholder="Choose date"
+                                  :disabled=pendingFlag placeholder="Choose date"
                                   style="width:190px" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
         <!--   FTSI title区域     -->
@@ -228,6 +228,7 @@ export default {
       this.addForm.rev=item.revision
       this.addForm.ftsi_title=item.ftsi_title
       this.addForm.statement=item.statement
+      this.addForm.issueDate=item.issue_date
       this.addForm.appliedIPS=item.impact_ips
       this.getTypeFTSI()
       this.pendingFlag=true

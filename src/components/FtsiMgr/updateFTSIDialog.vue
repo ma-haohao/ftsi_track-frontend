@@ -12,22 +12,22 @@
         </el-form-item>
         <!--   版本号区域     -->
         <el-form-item label="Rev." prop="rev" class="required">
-          <el-input class="shortInputForm" v-model="updateForm.rev"></el-input>
+          <el-input class="shortInputForm" v-model="updateForm.rev" :disabled=pendingFlag></el-input>
         </el-form-item>
         <!--   起效时间     -->
         <el-form-item label="Issue Date" prop="issueDate" class="required"
                       :rules="[{required: true, message: 'please choose the start date', trigger: 'blur'}]">
           <el-date-picker v-model="updateForm.issueDate" type="date"
-                          placeholder="Choose date"
+                          placeholder="Choose date" :disabled=pendingFlag
                           style="width:190px" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
         <!--   FTSI title区域     -->
         <el-form-item label="FTSI Title" prop="ftsi_title">
-          <el-input type="textarea" class="longInputForm" v-model="updateForm.ftsi_title"></el-input>
+          <el-input type="textarea" class="longInputForm" v-model="updateForm.ftsi_title" :disabled=pendingFlag></el-input>
         </el-form-item>
         <!--   Compliance Statement区域     -->
         <el-form-item label="Compliance Stat." prop="compliance">
-          <el-input type="textarea" class="longInputForm" v-model="updateForm.statement"></el-input>
+          <el-input type="textarea" class="longInputForm" v-model="updateForm.statement" :disabled=pendingFlag></el-input>
         </el-form-item>
         <!--   单选框：是否改变监控类型    -->
         <el-form-item>
@@ -236,12 +236,14 @@ export default {
     },
     async initForPending(item){
       this.getTypeFTSI()
-      const old_ips=await this.getFTSIInfo(item.id)
+      await this.getFTSIInfo(item.id)
       this.updateForm.pending_id=item.pending_id
       this.updateForm.rev=item.revision
       this.updateForm.ftsi_title=item.ftsi_title
+      if(this.updateForm.statement!==item.statement){this.modifyType=true}
       this.updateForm.statement=item.statement
-      this.applied_ips_compare(old_ips,item.impact_ips)
+      this.updateForm.issueDate=item.issue_date
+      this.applied_ips_compare(this.updateForm.appliedIPS,item.impact_ips)
       this.updateForm.appliedIPS=item.impact_ips
       this.pendingFlag=true
     },
@@ -260,7 +262,6 @@ export default {
       this.monitorTypeCheck()
       this.paraShowControl()
       if(this.showTriggerDate===true){this.updateForm.triggerDateForm=this.updateForm.customizePara.trigger.parameter}
-      return res.data.appliedIPS
     },
     onlyNum(rule, value, callback) {
       const regNum = /^[0-9_-]*$/
