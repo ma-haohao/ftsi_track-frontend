@@ -25,6 +25,10 @@ html,body,#app{
     width: 193px;
 }
 
+.sshortInputForm {
+    width: 150px;
+}
+
 .longInputForm {
     width: 580px;
 }

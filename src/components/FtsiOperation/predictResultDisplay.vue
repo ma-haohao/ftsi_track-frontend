@@ -58,8 +58,8 @@
     </span>
     <!--  foot area  -->
     <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible=false">close</el-button>
-  </span>
+      <el-button @click="dialogVisible=false">close</el-button>
+    </span>
   </el-dialog>
 </template>
 
