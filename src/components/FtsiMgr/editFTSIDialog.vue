@@ -14,6 +14,13 @@
         <el-form-item label="Rev." prop="rev" class="required">
           <el-input class="shortInputForm" v-model="editForm.rev" :disabled="true"></el-input>
         </el-form-item>
+        <!--   起效时间     -->
+        <el-form-item label="Issue Date" prop="issueDate" class="required"
+                      :rules="[{required: true, message: 'please choose the start date', trigger: 'blur'}]">
+          <el-date-picker v-model="editForm.issueDate" type="date"
+                          placeholder="Choose date"
+                          style="width:190px" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+        </el-form-item>
         <!--   FTSI title区域     -->
         <el-form-item label="FTSI Title" prop="ftsi_title">
           <el-input type="textarea" class="longInputForm" v-model="editForm.ftsi_title"></el-input>
