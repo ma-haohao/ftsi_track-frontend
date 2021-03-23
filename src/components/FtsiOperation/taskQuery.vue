@@ -40,7 +40,7 @@
         <el-button type="primary" @click="openParaDialog" style="margin-bottom: 15px">Monitor Parameters</el-button>
         <!--    预测栏    -->
         <el-form :inline="true" class="demo-form-inline" :model="predictForm" :rules="predictFormRules"
-                 ref="predictFormRules">
+                 ref="predictFormRef">
           <el-form-item label="Flight day" prop="flightDay">
             <el-input v-model="predictForm.flightDay" class="predictInputForm"></el-input>
           </el-form-item>
@@ -289,7 +289,6 @@ export default {
       this.amountLeft = res.data.amountLeft
       this.amountRight = res.data.amountRight
       this.totalForm=res.data.ftsiForTotal
-      console.log(this.totalForm)
       this.amountTotal=res.data.amountTotal
     },
     changeTrStyle({row, column, rowIndex, columnIndex}) {
@@ -319,7 +318,7 @@ export default {
     },
     //发起预测请求
     predictAction() {
-      this.$refs.predictFormRules.validate(async valid => {
+      this.$refs.predictFormRef.validate(async valid => {
         if (!valid) return
         //可以发起添加请求
         this.predictForm.aircraftMSN = this.queryForm.aircraftMSN

@@ -24,7 +24,6 @@
         <el-col :span="4">
           <el-button type="primary" @click="openAddDialog">Add FTSI</el-button>
         </el-col>
-
       </el-row>
       <!--   ftsi info table area   -->
       <el-table :data="ftsiList" border stripe :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}">

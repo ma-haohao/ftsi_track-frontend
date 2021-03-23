@@ -3,6 +3,17 @@
     <h3>Welcome</h3>
     <!-- card view   -->
     <el-card style="height:700px;width:900px">
+      <!--   search and add area   -->
+      <el-form ref="dateFormRef" :model="dateForm">
+        <el-form-item prop="submitDate" class="required"
+                      :rules="[{required: true, message: 'please enter the date', trigger: 'blur'}]">
+          <el-date-picker v-model="dateForm.submitDate" type="date"
+                        placeholder="Choose date"
+                        style="width:190px" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+          <el-button type="primary" style="margin-left: 20px" @click="submitEngineInfo">Submit</el-button>
+        </el-form-item>
+      </el-form>
+      <!--  发动机数据    -->
       <el-scrollbar style="height: 650px; width:850px">
         <el-table :data="engineInfo" :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}" border stripe>
           <el-table-column label="Engine" prop="engine"></el-table-column>
@@ -38,7 +49,10 @@ export default {
   },
   data() {
     return {
-      engineInfo: []
+      engineInfo: [],
+      dateForm:{
+        submitDate: ""
+      }
     }
   },
   methods: {
@@ -53,6 +67,17 @@ export default {
     },
     async openEngineEditDialog(engineNum){
       this.$refs.engineEditRef.init(engineNum)
+    },
+    async submitEngineInfo(){
+      this.$refs.dateFormRef.validate(async valid => {
+        if (!valid) return
+        //可以发起添加请求
+        const {data: res} = await this.$http.put('common/submitEngineHistory/', this.dateForm)
+        if (res.meta.status !== 200) {
+          return this.$message.error(res.meta.msg)
+        }
+        this.$message.success(res.meta.msg)
+      })
     }
   }
 }

@@ -24,7 +24,7 @@
         <p style="margin-top: 0px">Cache Date: {{cacheDate}}</p>
         <!--    预测栏    -->
         <el-form :inline="true" class="demo-form-inline" :model="predictForm" :rules="predictFormRules"
-                 ref="predictFormRules">
+                 ref="predictFormRef">
           <el-form-item label="Flight day" prop="flightDay">
             <el-input v-model="predictForm.flightDay" class="predictInputForm"></el-input>
           </el-form-item>
@@ -71,6 +71,21 @@
               <el-table-column label="Last implement" prop="last_date"></el-table-column>
               <el-table-column label="Compliance Statement" prop="ftsi_info.statement" width="500"></el-table-column>
               <el-table-column label="Comments" prop="comments"></el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane :label="'TOTAL'" name="third">
+            <span>Total: {{ amountTotal }}</span>
+            <el-table :data="totalForm" border stripe
+                      :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}" style="font-size: 13px"
+                      :cell-style="changeTrStyleForTotal">
+              <el-table-column label="FTSI Num." prop="ftsi_info.ftsi_num,ftsi_info.rev" width="110">
+                <template slot-scope="scope"> {{ scope.row.ftsi_info.ftsi_num }} Rev. {{ scope.row.ftsi_info.rev }}
+                </template>
+              </el-table-column>
+              <el-table-column label="FTSI Title" prop="ftsi_info.ftsi_title"></el-table-column>
+              <el-table-column label="Compliance Statement" prop="ftsi_info.statement" width="400"></el-table-column>
+              <el-table-column label="Comments(LH)" prop="comments_LH"></el-table-column>
+              <el-table-column label="Comments(RH)" prop="comments_RH"></el-table-column>
             </el-table>
           </el-tab-pane>
         </el-tabs>
@@ -144,6 +159,8 @@ export default {
       amountRight: '',
       leftForm: [],
       rightForm: [],
+      totalForm:[],
+      amountTotal:'',
     }
   },
   methods: {
@@ -170,6 +187,8 @@ export default {
       this.amountLeft = res.data.amountLeft
       this.amountRight = res.data.amountRight
       this.cacheDate=res.data.cacheDate
+      this.totalForm=res.data.ftsiForTotal
+      this.amountTotal=res.data.amountTotal
     },
     changeTrStyle({row, column, rowIndex, columnIndex}) {
       if (row.reminds === 'attention' && column.label === 'Comments') {
@@ -178,12 +197,27 @@ export default {
         return 'background:#FFD102'
       }
     },
+    changeTrStyleForTotal({row, column, rowIndex, columnIndex}) {
+      if (row.reminds_LH === 'attention' && column.label === 'Comments(LH)') {
+        return 'background:#FE5E02'
+      } else if (row.reminds_LH === 'warning' && column.label === 'Comments(LH)') {
+        return 'background:#FFD102'
+      } else if (row.reminds_RH === 'attention' && column.label === 'Comments(RH)') {
+        return 'background:#FE5E02'
+      } else if (row.reminds_RH === 'warning' && column.label === 'Comments(RH)') {
+        return 'background:#FFD102'
+      }else if (row.reminds_RH === 'NA' && column.label === 'Comments(RH)') {
+        return 'background:#949596'
+      }else if (row.reminds_LH === 'NA' && column.label === 'Comments(LH)') {
+        return 'background:#949596'
+      }
+    },
     openCacheDialog() {
       this.$refs.cacheAircraftDialogRef.init()
     },
     //发起预测请求
     predictAction() {
-      this.$refs.predictFormRules.validate(async valid => {
+      this.$refs.predictFormRef.validate(async valid => {
         if (!valid) return
         //可以发起添加请求
         this.predictForm.aircraftMSN = this.queryForm.aircraftMSN
