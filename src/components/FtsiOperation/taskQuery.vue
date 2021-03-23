@@ -119,6 +119,21 @@
               </el-table-column>
             </el-table>
           </el-tab-pane>
+          <el-tab-pane :label="'TOTAL'" name="third">
+            <span>Total: {{ amountTotal }}</span>
+            <el-table :data="totalForm" border stripe
+                      :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}" style="font-size: 13px"
+                      :cell-style="changeTrStyleForTotal">
+              <el-table-column label="FTSI Num." prop="ftsi_info.ftsi_num,ftsi_info.rev" width="110">
+                <template slot-scope="scope"> {{ scope.row.ftsi_info.ftsi_num }} Rev. {{ scope.row.ftsi_info.rev }}
+                </template>
+              </el-table-column>
+              <el-table-column label="FTSI Title" prop="ftsi_info.ftsi_title"></el-table-column>
+              <el-table-column label="Compliance Statement" prop="ftsi_info.statement" width="400"></el-table-column>
+              <el-table-column label="Comments(LH)" prop="comments_LH"></el-table-column>
+              <el-table-column label="Comments(RH)" prop="comments_RH"></el-table-column>
+            </el-table>
+          </el-tab-pane>
         </el-tabs>
         <div class="offWingTable" v-show="showOffWingTable">
           <span>Total: {{ amountLeft }}</span>
@@ -223,6 +238,8 @@ export default {
       amountRight: '',
       leftForm: [],
       rightForm: [],
+      totalForm:[],
+      amountTotal:'',
     }
   },
   methods: {
@@ -271,12 +288,30 @@ export default {
       this.rightForm = res.data.ftsiForRight
       this.amountLeft = res.data.amountLeft
       this.amountRight = res.data.amountRight
+      this.totalForm=res.data.ftsiForTotal
+      console.log(this.totalForm)
+      this.amountTotal=res.data.amountTotal
     },
     changeTrStyle({row, column, rowIndex, columnIndex}) {
       if (row.reminds === 'attention' && column.label === 'Comments') {
         return 'background:#FE5E02'
       } else if (row.reminds === 'warning' && column.label === 'Comments') {
         return 'background:#FFD102'
+      }
+    },
+    changeTrStyleForTotal({row, column, rowIndex, columnIndex}) {
+      if (row.reminds_LH === 'attention' && column.label === 'Comments(LH)') {
+        return 'background:#FE5E02'
+      } else if (row.reminds_LH === 'warning' && column.label === 'Comments(LH)') {
+        return 'background:#FFD102'
+      } else if (row.reminds_RH === 'attention' && column.label === 'Comments(RH)') {
+        return 'background:#FE5E02'
+      } else if (row.reminds_RH === 'warning' && column.label === 'Comments(RH)') {
+        return 'background:#FFD102'
+      }else if (row.reminds_RH === 'NA' && column.label === 'Comments(RH)') {
+        return 'background:#949596'
+      }else if (row.reminds_LH === 'NA' && column.label === 'Comments(LH)') {
+        return 'background:#949596'
       }
     },
     openEditDetailDialog(id) {
