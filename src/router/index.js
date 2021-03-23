@@ -11,6 +11,7 @@ import CacheSubmit from '../components/FtsiOperation/cacheSubmit.vue'
 import SubmitRecord from '../components/History/submitRecord.vue'
 import FTSIRecord from '../components/History/ftsiModifyRecord.vue'
 import PendingList from '../components/FtsiMgr/pendingList.vue'
+import SubmitFalied from '../components/History/submitFailed.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -27,7 +28,8 @@ const router = new Router({
         {path:'/cachesubmit',component: CacheSubmit},
         {path:'/submitrecord',component: SubmitRecord},
         {path:'/ftsirecord',component: FTSIRecord},
-        {path:'/pendingList',component: PendingList}
+        {path:'/pendingList',component: PendingList},
+        {path:'/submitFailed',component: SubmitFalied}
       ]}
   ]
 })
