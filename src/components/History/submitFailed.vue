@@ -40,7 +40,7 @@ export default {
       if (res.meta.status !== 200) {
         return this.$message.error('failed to get the submit failed record')
       }
-      this.submitList = res.data.
+      this.submitList = res.data.query_info
       this.total = res.data.totalitems
     }
   }
