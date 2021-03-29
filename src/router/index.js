@@ -17,7 +17,7 @@ Vue.use(Router)
 const router = new Router({
   routes:[
     {path:'/',redirect:'/login'},
-    {path:'/login',component:Login},
+    {path:'/login',component:Login,meta:{title:"Login"}},
     {path:'/home',component:Home,redirect: '/welcome',
       children:[
         {path:'/welcome',component:Welcome},
@@ -39,6 +39,18 @@ router.beforeEach((to,from,next)=>{
   if(to.path==='/login') return next();
   const tokenStr=window.sessionStorage.getItem('token')
   if (!tokenStr) return next('/login')
+  next()
+})
+
+router.beforeEach((to, from, next) => {
+  //beforeEach是router的钩子函数，在进入路由前执行
+  if (to.meta.title) {
+    //判断是否有标题
+    console.log(to.meta.title)
+    document.title = "[Beta] "+to.meta.title
+  } else {
+    document.title = '[Beta] FTSI Tracking System'
+  }
   next()
 })
 

@@ -10,7 +10,7 @@ import './assets/font_navigate/iconfont.css'
 import axios from 'axios'
 import Axios from "axios";
 Axios.defaults.headers.post['Content-Type']='application/x-www-form-urlencoded;charset=utf-8';
-axios.defaults.baseURL="http://127.0.0.1:8888/"
+axios.defaults.baseURL="http://c919ftftsi.av.ge.com/"
 axios.interceptors.request.use(config=>{
   config.headers.Authorization=window.sessionStorage.getItem('token');
   return config;
