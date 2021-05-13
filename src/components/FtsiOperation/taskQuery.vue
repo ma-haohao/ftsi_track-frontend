@@ -16,7 +16,7 @@
               <el-radio-button v-for="item in aircraftList" :label="item"></el-radio-button>
             </el-radio-group>
             <el-radio-group v-model="queryForm.typeSelect" @change="getFTSIforAifcraft" size="small">
-              <el-radio-button v-for="item in typeList" :label="item"></el-radio-button>
+              <el-radio-button v-for="item in typeList" :label="item"></el-radio-button>你
             </el-radio-group>
           </div>
         </el-tab-pane>
@@ -41,17 +41,23 @@
         <!--    预测栏    -->
         <el-form :inline="true" class="demo-form-inline" :model="predictForm" :rules="predictFormRules"
                  ref="predictFormRef">
-          <el-form-item label="Flight day" prop="flightDay">
+          <el-form-item label="FD" prop="flightDay">
             <el-input v-model="predictForm.flightDay" class="predictInputForm"></el-input>
           </el-form-item>
-          <el-form-item label="Flight hour" prop="flightHour">
+          <el-form-item label="FH" prop="flightHour">
             <el-input v-model="predictForm.flightHour" class="predictInputForm"></el-input>
           </el-form-item>
-          <el-form-item label="Engine hour" prop="engineHour">
+          <el-form-item label="EH" prop="engineHour">
             <el-input v-model="predictForm.engineHour" class="predictInputForm"></el-input>
           </el-form-item>
           <el-form-item label="C1 cycle" prop="c1Cycle">
             <el-input v-model="predictForm.c1Cycle" class="predictInputForm"></el-input>
+          </el-form-item>
+          <el-form-item label="FC" prop="flightCycle">
+            <el-input v-model="predictForm.flightCycle" class="predictInputForm"></el-input>
+          </el-form-item>
+          <el-form-item label="TR cycle" prop="TRCycle">
+            <el-input v-model="predictForm.TRCycle" class="predictInputForm"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="predictAction">Predict</el-button>
@@ -203,6 +209,8 @@ export default {
         flightHour: 5,
         engineHour: 5,
         c1Cycle: 1,
+        flightCycle: 1,
+        TRCycle:1,
         aircraftMSN: '',
         engineIPS: '',
         onWing: '',
