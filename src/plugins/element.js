@@ -3,7 +3,7 @@ import { Button,Form,FormItem,Input,Message,
     Container,Header,Aside,Main,
     Menu,Submenu,MenuItem,Breadcrumb,BreadcrumbItem,Card,
     Table,TableColumn,Scrollbar,Select,Option,Row,Col,Tooltip,
-    Pagination,Dialog,Transfer,Switch} from 'element-ui'
+    Pagination,Dialog,Transfer,Switch,RadioGroup,RadioButton,DatePicker,Tabs,TabPane} from 'element-ui'
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
 locale.use(lang)
@@ -36,3 +36,8 @@ Vue.use(Pagination)
 Vue.use(Dialog)
 Vue.use(Transfer)
 Vue.use(Switch)
+Vue.use(RadioGroup)
+Vue.use(RadioButton)
+Vue.use(DatePicker)
+Vue.use(Tabs)
+Vue.use(TabPane)

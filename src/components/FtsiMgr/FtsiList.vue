@@ -17,7 +17,6 @@
               <el-option label="FTSI Num." value="ftsi_num"></el-option>
               <el-option label="FTSI Title" value="ftsi_title"></el-option>
               <el-option label="Type" value="dep_type"></el-option>
-
             </el-select>
             <el-button slot="append" icon="el-icon-search" @click="getFTSIList"></el-button>
           </el-input>
@@ -25,7 +24,6 @@
         <el-col :span="4">
           <el-button type="primary" @click="openAddDialog">Add FTSI</el-button>
         </el-col>
-
       </el-row>
       <!--   ftsi info table area   -->
       <el-table :data="ftsiList" border stripe :header-cell-style="{backgroundColor:'#6BA4FD', color:'#ffffff'}">
@@ -43,11 +41,11 @@
             </el-tooltip>
             <!--     文件编辑按钮       -->
             <el-tooltip effect="dark" content="Edit" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-edit" size="mini" @click="opendEditDialog"></el-button>
+              <el-button type="warning" icon="el-icon-edit" size="mini" @click="opendEditDialog(scope.row.id)"></el-button>
             </el-tooltip>
             <!--     文件升版按钮       -->
             <el-tooltip effect="dark" content="Update" placement="top" :enterable="false">
-              <el-button type="success" icon="el-icon-upload2" size="mini" @click="opendUpdateDialog"></el-button>
+              <el-button type="success" icon="el-icon-upload2" size="mini" @click="opendUpdateDialog(scope.row.id)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -63,10 +61,10 @@
           :total="total">
       </el-pagination>
     </el-card>
-    <addFTSI ref="addFTSIRef"></addFTSI>
+    <addFTSI ref="addFTSIRef" v-on:updateList="getFTSIList()"></addFTSI>
     <detailFTSI ref="detailFTSIRef"></detailFTSI>
     <editFTSI ref="editFTSIRef"></editFTSI>
-    <updateFTSI ref="updateFTSIRef"></updateFTSI>
+    <updateFTSI ref="updateFTSIRef" v-on:updateList="getFTSIList()"></updateFTSI>
   </div>
 
 </template>
@@ -122,15 +120,15 @@ export default {
     openAddDialog() {
       this.$refs.addFTSIRef.init()
     },
-    opendUpdateDialog() {
-      this.$refs.updateFTSIRef.init()
+    opendUpdateDialog(id) {
+      this.$refs.updateFTSIRef.init(id)
     },
     opendDetailDialog(id) {
       this.$refs.detailFTSIRef.init(id)
     },
-    opendEditDialog() {
-      this.$refs.editFTSIRef.init()
-    }
+    opendEditDialog(id) {
+      this.$refs.editFTSIRef.init(id)
+    },
   }
 }
 </script>
